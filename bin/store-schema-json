@@ -1,0 +1,61 @@
+#!/usr/bin/env node
+
+const request = require('request-promise');
+const { Client } = require('@elastic/elasticsearch');
+const changeCase = require('change-case');
+
+const client = new Client({ node: 'http://localhost:9200' });
+
+request({
+  method: 'GET',
+  url: 'http://avoindata.eduskunta.fi/api/v1/tables/',
+  json: true
+}).then(tableNames => {
+  return Promise.all(tableNames.map(tableName => {
+    return request({
+      method: 'GET',
+      url: `http://avoindata.eduskunta.fi/api/v1/tables/${tableName}/rows?page=0&perPage=1`,
+      json: true
+    }).then(({ rowData, columnNames, pkName }) => {
+      const indexName = changeCase.paramCase(tableName);
+      console.error(`tableName:  ${tableName}`);
+      console.error(`indexName:  ${indexName}`);
+      console.error(`primaryKey: ${pkName}`);
+
+      if (tableName === 'PrimaryKeys') {
+        console.error('Table PrimaryKeys is useless, skipping.');
+        console.error('');
+        return null;
+      }
+
+      if (!rowData.length) {
+        console.error('rowData is empty, skipping.');
+        console.error('');
+        return null;
+      }
+
+      const columns = columnNames.map((columnName, index) => {
+        const firstRowValue = rowData[0][index];
+
+        let columnType = 'string';
+        if (firstRowValue && firstRowValue.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}( |T)/)) {
+          columnType = 'date';
+        }
+
+        return { columnName, columnType };
+      });
+
+      columns.forEach(({ columnName, columnType }) => {
+        console.error(`${columnType.padStart(10)}  ${columnName}`);
+      });
+      console.error('');
+
+      return { tableName, indexName, primaryKey: pkName, columns };
+    });
+  })).then(tables => tables.filter(table => table !== null));
+}).then(tables => {
+  console.log(JSON.stringify({ tables }, null, 2));
+}).catch(error => {
+  console.error(error.stack);
+  process.exit(1);
+});

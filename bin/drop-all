@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+const request = require('request-promise');
+const { Client } = require('@elastic/elasticsearch');
+
+const client = new Client({ node: 'http://localhost:9200' });
+
+const { tables } = require('../src/schema.json');
+
+Promise.all(tables.map(({ indexName }) => {
+  return client.indices.delete({ index: indexName })
+    .catch(error => {
+      // console.error(`Error while dropping indexName: ${indexName}`, error);
+    });
+}));

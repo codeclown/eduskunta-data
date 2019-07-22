@@ -1,0 +1,798 @@
+{
+  "tables": [
+    {
+      "tableName": "Attachment",
+      "indexName": "attachment",
+      "primaryKey": "Id",
+      "columns": [
+        {
+          "columnName": "Id",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AttachmentGroupId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Url",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "AttachmentGroup",
+      "indexName": "attachment-group",
+      "primaryKey": "Id",
+      "columns": [
+        {
+          "columnName": "Id",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "SaliDBAanestys",
+      "indexName": "sali-db-aanestys",
+      "primaryKey": "AanestysId",
+      "columns": [
+        {
+          "columnName": "AanestysId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KieliId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoVPVuosi",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoNumero",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoPvm",
+          "columnType": "date"
+        },
+        {
+          "columnName": "IstuntoIlmoitettuAlkuaika",
+          "columnType": "date"
+        },
+        {
+          "columnName": "IstuntoAlkuaika",
+          "columnType": "date"
+        },
+        {
+          "columnName": "PJOtsikko",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysNumero",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysAlkuaika",
+          "columnType": "date"
+        },
+        {
+          "columnName": "AanestysLoppuaika",
+          "columnType": "date"
+        },
+        {
+          "columnName": "AanestysMitatoity",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysOtsikko",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysLisaOtsikko",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PaaKohtaTunniste",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PaaKohtaOtsikko",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PaaKohtaHuomautus",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KohtaKasittelyOtsikko",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KohtaKasittelyVaihe",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KohtaJarjestys",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KohtaTunniste",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KohtaOtsikko",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KohtaHuomautus",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysTulosJaa",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysTulosEi",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysTulosTyhjia",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysTulosPoissa",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysTulosYhteensa",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Url",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysPoytakirja",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysPoytakirjaUrl",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysValtiopaivaasia",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysValtiopaivaasiaUrl",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AliKohtaTunniste",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "SaliDBAanestysAsiakirja",
+      "indexName": "sali-db-aanestys-asiakirja",
+      "primaryKey": "AsiakirjaId",
+      "columns": [
+        {
+          "columnName": "AsiakirjaId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Asiakirja",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AsiakirjaUrl",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "SaliDBAanestysEdustaja",
+      "indexName": "sali-db-aanestys-edustaja",
+      "primaryKey": "EdustajaId",
+      "columns": [
+        {
+          "columnName": "EdustajaId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "EdustajaEtunimi",
+          "columnType": "string"
+        },
+        {
+          "columnName": "EdustajaSukunimi",
+          "columnType": "string"
+        },
+        {
+          "columnName": "EdustajaHenkiloNumero",
+          "columnType": "string"
+        },
+        {
+          "columnName": "EdustajaRyhmaLyhenne",
+          "columnType": "string"
+        },
+        {
+          "columnName": "EdustajaAanestys",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "SaliDBAanestysJakauma",
+      "indexName": "sali-db-aanestys-jakauma",
+      "primaryKey": "JakaumaId",
+      "columns": [
+        {
+          "columnName": "JakaumaId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AanestysId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Ryhma",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Jaa",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Ei",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Tyhjia",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Poissa",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Yhteensa",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Tyyppi",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "SaliDBAanestysKieli",
+      "indexName": "sali-db-aanestys-kieli",
+      "primaryKey": "KieliId",
+      "columns": [
+        {
+          "columnName": "KieliId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Kieli",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "SaliDBIstunto",
+      "indexName": "sali-db-istunto",
+      "primaryKey": "Id",
+      "columns": [
+        {
+          "columnName": "Id",
+          "columnType": "string"
+        },
+        {
+          "columnName": "TekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoTyyppi",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoTila",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoTilaSeliteFI",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoTilaSeliteSV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoVPVuosi",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoNumero",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoPvm",
+          "columnType": "date"
+        },
+        {
+          "columnName": "IstuntoIlmoitettuAlkuaika",
+          "columnType": "date"
+        },
+        {
+          "columnName": "IstuntoAlkuaika",
+          "columnType": "date"
+        },
+        {
+          "columnName": "IstuntoLoppuaika",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoNimenhuutoaika",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KasiteltavaKohtaTekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PJTekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PJOtsikkoFI",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PJOtsikkoSV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PJTila",
+          "columnType": "string"
+        },
+        {
+          "columnName": "XmlData",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Created",
+          "columnType": "date"
+        },
+        {
+          "columnName": "Modified",
+          "columnType": "date"
+        },
+        {
+          "columnName": "PuhujaHenkilonumero",
+          "columnType": "string"
+        },
+        {
+          "columnName": "ManuaalinenEsto",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AttachmentGroupId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "SaliDBKohta",
+      "indexName": "sali-db-kohta",
+      "primaryKey": "Id",
+      "columns": [
+        {
+          "columnName": "Id",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoTekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "TekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "VaskiID",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PuheenvuoroTyyppiOletus",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PJKohtaTunnus",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Jarjestysnumero",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Tunniste",
+          "columnType": "string"
+        },
+        {
+          "columnName": "VoikoPyytaaPV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "OtsikkoFI",
+          "columnType": "string"
+        },
+        {
+          "columnName": "OtsikkoSV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "HuomautusFI",
+          "columnType": "string"
+        },
+        {
+          "columnName": "HuomautuSV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PaatosFI",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PaatosSV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "XmlData",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Created",
+          "columnType": "date"
+        },
+        {
+          "columnName": "Modified",
+          "columnType": "date"
+        },
+        {
+          "columnName": "KasittelyotsikkoFI",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KasittelyotsikkoSV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "SaliDBKohtaAanestys",
+      "indexName": "sali-db-kohta-aanestys",
+      "primaryKey": "Id",
+      "columns": [
+        {
+          "columnName": "Id",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoTekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KohtaTekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Aanestysnumero",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Created",
+          "columnType": "date"
+        },
+        {
+          "columnName": "Modified",
+          "columnType": "date"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "SaliDBKohtaAsiakirja",
+      "indexName": "sali-db-kohta-asiakirja",
+      "primaryKey": "Id",
+      "columns": [
+        {
+          "columnName": "Id",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KohtaTekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "TekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "NimiFI",
+          "columnType": "string"
+        },
+        {
+          "columnName": "LinkkiTekstiFI",
+          "columnType": "string"
+        },
+        {
+          "columnName": "LinkkiUrlFI",
+          "columnType": "string"
+        },
+        {
+          "columnName": "NimiSV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "LinkkiTekstiSV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "LinkkiUrlSV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Created",
+          "columnType": "date"
+        },
+        {
+          "columnName": "Modified",
+          "columnType": "date"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "SaliDBPuheenvuoro",
+      "indexName": "sali-db-puheenvuoro",
+      "primaryKey": "Id",
+      "columns": [
+        {
+          "columnName": "Id",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoTekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KohtaTekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "TekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Jarjestys",
+          "columnType": "date"
+        },
+        {
+          "columnName": "PVTyyppi",
+          "columnType": "string"
+        },
+        {
+          "columnName": "henkilonumero",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Etunimi",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Sukunimi",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Sukupuoli",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PyyntoTapa",
+          "columnType": "string"
+        },
+        {
+          "columnName": "PyyntoAika",
+          "columnType": "date"
+        },
+        {
+          "columnName": "XmlData",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Created",
+          "columnType": "date"
+        },
+        {
+          "columnName": "Modified",
+          "columnType": "date"
+        },
+        {
+          "columnName": "RyhmaLyhenneFI",
+          "columnType": "string"
+        },
+        {
+          "columnName": "RyhmaLyhenneSV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Puhunut",
+          "columnType": "string"
+        },
+        {
+          "columnName": "JarjestysNro",
+          "columnType": "string"
+        },
+        {
+          "columnName": "ADtunnus",
+          "columnType": "string"
+        },
+        {
+          "columnName": "MinisteriysFI",
+          "columnType": "string"
+        },
+        {
+          "columnName": "MinisteriysSV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "SaliDBTiedote",
+      "indexName": "sali-db-tiedote",
+      "primaryKey": "Id",
+      "columns": [
+        {
+          "columnName": "Id",
+          "columnType": "string"
+        },
+        {
+          "columnName": "TekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "IstuntoTekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "KohtaTekninenAvain",
+          "columnType": "string"
+        },
+        {
+          "columnName": "TiedoteTyyppi",
+          "columnType": "string"
+        },
+        {
+          "columnName": "TiedoteTekstiFI",
+          "columnType": "string"
+        },
+        {
+          "columnName": "TiedoteTekstiSV",
+          "columnType": "string"
+        },
+        {
+          "columnName": "TiedoteVoimassaolo",
+          "columnType": "string"
+        },
+        {
+          "columnName": "TiedoteLahetetty",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Created",
+          "columnType": "date"
+        },
+        {
+          "columnName": "Modified",
+          "columnType": "date"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "VaskiData",
+      "indexName": "vaski-data",
+      "primaryKey": "Id",
+      "columns": [
+        {
+          "columnName": "Id",
+          "columnType": "string"
+        },
+        {
+          "columnName": "XmlData",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Status",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Created",
+          "columnType": "date"
+        },
+        {
+          "columnName": "Eduskuntatunnus",
+          "columnType": "string"
+        },
+        {
+          "columnName": "AttachmentGroupId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "Imported",
+          "columnType": "date"
+        }
+      ]
+    }
+  ]
+}
