@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 
 const request = require('request-promise');
-const { Client } = require('@elastic/elasticsearch');
-const changeCase = require('change-case');
 
-const client = new Client({ node: 'http://localhost:9200' });
+// The resulting schema JSON is compared before every data sync, so we can abort syncing data if remote schema has changed
 
 request({
   method: 'GET',
@@ -17,9 +15,7 @@ request({
       url: `http://avoindata.eduskunta.fi/api/v1/tables/${tableName}/rows?page=0&perPage=1`,
       json: true
     }).then(({ rowData, columnNames, pkName }) => {
-      const indexName = changeCase.paramCase(tableName);
       console.error(`tableName:  ${tableName}`);
-      console.error(`indexName:  ${indexName}`);
       console.error(`primaryKey: ${pkName}`);
 
       if (tableName === 'PrimaryKeys') {
@@ -50,7 +46,7 @@ request({
       });
       console.error('');
 
-      return { tableName, indexName, primaryKey: pkName, columns };
+      return { tableName, primaryKey: pkName, columns };
     });
   })).then(tables => tables.filter(table => table !== null));
 }).then(tables => {

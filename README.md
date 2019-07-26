@@ -1,37 +1,33 @@
-# jallituksen-esitys
+# eduskunta-data
 
-## Download the entire dataset into ElasticSearch
+## Download the entire dataset into Postgres
 
-### Start ElasticSearch via docker
+### Start Postgres via docker
 
 ```bash
-docker pull docker.elastic.co/elasticsearch/elasticsearch:7.2.0
-docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+docker run --name eduskunta-data-postgres -e POSTGRES_USER=foo -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres
 ```
 
-### Store description of schema (first time only)
+### Run migrations
 
 ```bash
-./bin/store-schema-json > src/schema.json
+yarn knex migrate:latest
 ```
 
-Schema is cached so that a few pieces of computed information are available always:
-
-- index name (must be derived from table name because elasticsearch has restrictions on index names)
-- column types (all column types in remote API are just strings)
-
-### (optional) Drop all indexes
-
-Useful when developing.
+### Download data from API
 
 ```bash
-./bin/drop-all
-```
-
-### Index data from remote API
-
-```bash
-./bin/index-data
+./bin/download-data
 ```
 
 Running it for a while (~5 min) should be plenty to gather enough data for development purposes.
+
+The script should be able to start from where it left off, if you run it again.
+
+### Other
+
+#### Connect to psql via terminal
+
+```bash
+docker exec -it eduskunta-data-postgres psql -U foo -d foo
+```

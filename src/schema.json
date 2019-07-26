@@ -2,7 +2,6 @@
   "tables": [
     {
       "tableName": "Attachment",
-      "indexName": "attachment",
       "primaryKey": "Id",
       "columns": [
         {
@@ -25,7 +24,6 @@
     },
     {
       "tableName": "AttachmentGroup",
-      "indexName": "attachment-group",
       "primaryKey": "Id",
       "columns": [
         {
@@ -40,7 +38,6 @@
     },
     {
       "tableName": "SaliDBAanestys",
-      "indexName": "sali-db-aanestys",
       "primaryKey": "AanestysId",
       "columns": [
         {
@@ -187,7 +184,6 @@
     },
     {
       "tableName": "SaliDBAanestysAsiakirja",
-      "indexName": "sali-db-aanestys-asiakirja",
       "primaryKey": "AsiakirjaId",
       "columns": [
         {
@@ -214,7 +210,6 @@
     },
     {
       "tableName": "SaliDBAanestysEdustaja",
-      "indexName": "sali-db-aanestys-edustaja",
       "primaryKey": "EdustajaId",
       "columns": [
         {
@@ -253,7 +248,6 @@
     },
     {
       "tableName": "SaliDBAanestysJakauma",
-      "indexName": "sali-db-aanestys-jakauma",
       "primaryKey": "JakaumaId",
       "columns": [
         {
@@ -300,7 +294,6 @@
     },
     {
       "tableName": "SaliDBAanestysKieli",
-      "indexName": "sali-db-aanestys-kieli",
       "primaryKey": "KieliId",
       "columns": [
         {
@@ -319,7 +312,6 @@
     },
     {
       "tableName": "SaliDBIstunto",
-      "indexName": "sali-db-istunto",
       "primaryKey": "Id",
       "columns": [
         {
@@ -426,7 +418,6 @@
     },
     {
       "tableName": "SaliDBKohta",
-      "indexName": "sali-db-kohta",
       "primaryKey": "Id",
       "columns": [
         {
@@ -517,7 +508,6 @@
     },
     {
       "tableName": "SaliDBKohtaAanestys",
-      "indexName": "sali-db-kohta-aanestys",
       "primaryKey": "Id",
       "columns": [
         {
@@ -552,7 +542,6 @@
     },
     {
       "tableName": "SaliDBKohtaAsiakirja",
-      "indexName": "sali-db-kohta-asiakirja",
       "primaryKey": "Id",
       "columns": [
         {
@@ -607,7 +596,6 @@
     },
     {
       "tableName": "SaliDBPuheenvuoro",
-      "indexName": "sali-db-puheenvuoro",
       "primaryKey": "Id",
       "columns": [
         {
@@ -706,7 +694,6 @@
     },
     {
       "tableName": "SaliDBTiedote",
-      "indexName": "sali-db-tiedote",
       "primaryKey": "Id",
       "columns": [
         {
@@ -761,7 +748,6 @@
     },
     {
       "tableName": "VaskiData",
-      "indexName": "vaski-data",
       "primaryKey": "Id",
       "columns": [
         {

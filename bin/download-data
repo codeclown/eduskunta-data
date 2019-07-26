@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+
+const request = require('request-promise');
+const getDb = require('../src/db');
+
+const { tables } = require('../src/schema.json');
+
+const db = getDb();
+
+getRowCountEstimates()
+  .then(estimates => Promise.all([
+    // indexTable(tables.find(({ tableName }) => tableName === 'SaliDBAanestys'), estimates),
+    indexTable(tables.find(({ tableName }) => tableName === 'SaliDBAanestysEdustaja'), estimates)
+  ]))
+  // .then(estimates => Promise.all(tables.map(table => indexTable(table, estimates))))
+  .catch(error => {
+    if (error.meta) {
+      console.error(error.meta.body);
+    } else {
+      console.error(error.stack);
+    }
+    process.exit(1);
+  });
+
+function getRowCountEstimates() {
+  return request({
+    method: 'GET',
+    url: 'http://avoindata.eduskunta.fi/api/v1/tables/counts',
+    json: true
+  });
+}
+
+function indexTable({ tableName, indexName, primaryKey, columns }, estimates) {
+  const rowCountEstimate = estimates.find(item => item.tableName === tableName).rowCount;
+  const dateFields = columns.filter(column => column.type === 'date');
+
+  return db(tableName)
+    .max(primaryKey)
+    .then(results => results[0].max)
+    .then(maxId => {
+      const pkStartValue = maxId ? parseInt(maxId) + 1 : 1;
+
+      console.error(`[${tableName}] rowCountEstimate: ${rowCountEstimate} pkStartValue: ${pkStartValue}`);
+
+      return getData(pkStartValue, 0);
+    });
+
+  function getData(pkStartValue, requests) {
+    const url = `http://avoindata.eduskunta.fi/api/v1/tables/${tableName}/batch?perPage=100&pkStartValue=${pkStartValue}&pkName=${encodeURIComponent(primaryKey)}`
+    return request({ url, json: true })
+      .then(({ columnNames, hasMore, pkLastValue, rowData }) => {
+        return db(tableName).insert(
+          rowData.map(row => {
+            return row.reduce((obj, value, index) => {
+              obj[columnNames[index]] = value;
+              return obj;
+            }, {});
+          })
+        ).then(() =>
+          Promise.all(dateFields.map(dateField =>
+            db(`${tableName}_${field}`).insert(rowData.map(row => {
+              const obj = {};
+              obj[primaryKey] = row[columnNames.indexOf(primaryKey)];
+              obj[dateField] = new Date(row[columnNames.indexOf(dateField)]);
+              return obj;
+            }))
+          ))
+        ).then(() => {
+          if (requests % 10) {
+            return db(tableName).count(primaryKey, { as: 'amount' })
+              .then(results => results[0].amount)
+              .then(amount => {
+                console.error(`[${tableName}] indexed results: ${amount} / ${rowCountEstimate}`);
+              });
+          }
+        }).then(() => {
+          if (hasMore) {
+            return getData(parseInt(pkLastValue) + 1, requests + 1);
+          }
+        });
+      });
+  }
+}
