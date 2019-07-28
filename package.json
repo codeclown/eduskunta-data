@@ -5,7 +5,13 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.4"
   },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0",
+    "supertest": "^4.0.2"
+  },
   "scripts": {
-    "knex": "knex --knexfile src/knexfile.js"
+    "knex": "knex --knexfile src/knexfile.js",
+    "test": "mocha"
   }
 }

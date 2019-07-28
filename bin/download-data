@@ -49,6 +49,7 @@ function indexTable({ tableName, indexName, primaryKey, columns }, estimates) {
     const url = `http://avoindata.eduskunta.fi/api/v1/tables/${tableName}/batch?perPage=100&pkStartValue=${pkStartValue}&pkName=${encodeURIComponent(primaryKey)}`
     return request({ url, json: true })
       .then(({ columnNames, hasMore, pkLastValue, rowData }) => {
+        // TODO should use table-specific insert-functions here, like insertFromSaliDBAanestysEdustaja
         return db(tableName).insert(
           rowData.map(row => {
             return row.reduce((obj, value, index) => {
