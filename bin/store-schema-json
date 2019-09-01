@@ -6,13 +6,13 @@ const request = require('request-promise');
 
 request({
   method: 'GET',
-  url: 'http://avoindata.eduskunta.fi/api/v1/tables/',
+  url: 'https://avoindata.eduskunta.fi/api/v1/tables/',
   json: true
 }).then(tableNames => {
   return Promise.all(tableNames.map(tableName => {
     return request({
       method: 'GET',
-      url: `http://avoindata.eduskunta.fi/api/v1/tables/${tableName}/rows?page=0&perPage=1`,
+      url: `https://avoindata.eduskunta.fi/api/v1/tables/${tableName}/rows?page=0&perPage=1`,
       json: true
     }).then(({ rowData, columnNames, pkName }) => {
       console.error(`tableName:  ${tableName}`);

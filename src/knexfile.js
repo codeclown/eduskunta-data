@@ -4,7 +4,8 @@ module.exports = {
     connection: {
       user: 'foo',
       password: 'secret',
-      database: 'foo'
+      database: 'foo',
+      port: 5432
     }
   },
   testing: {
@@ -12,7 +13,8 @@ module.exports = {
     connection: {
       user: 'foo2',
       password: 'secret',
-      database: 'foo2'
+      database: 'foo2',
+      port: 5433
     }
   },
   migrations: {

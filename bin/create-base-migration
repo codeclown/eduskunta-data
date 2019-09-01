@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+const request = require('request-promise');
+
+const { tables } = require('../src/schema.json');
+
+const createTable = table => `
+  knex.schema.createTable('${table.tableName}', table => {
+    ${table.columns.map(column => {
+      if (column.columnType === 'date') {
+        return `table.datetime('${column.columnName}_Datetime');\n   table.string('${column.columnName}');`;
+      }
+      return `table.text('${column.columnName}');`;
+    }).join('\n    ')}
+    table.integer('${table.primaryKey}_Integer').primary();
+  })
+`.trim();
+
+const template = `
+exports.up = knex => Promise.all([
+  ${tables.map(table => createTable(table)).join(',\n  ')}
+]);
+
+exports.down = knex => Promise.all([
+  ${tables.map(table => `knex.schema.dropTable('${table.tableName}')`).join(',\n  ')}
+]);
+`.trim();
+
+console.log(template);

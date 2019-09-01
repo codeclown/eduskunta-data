@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+
+const bluebird = require('bluebird');
+const fs = require('fs');
+const path = require('path');
+const request = require('request-promise');
+const getDb = require('../src/db');
+
+const { tables } = require('../src/schema.json');
+
+const db = getDb();
+
+console.log('Prepare for slowness (downloading images one by one and they are slow)');
+
+db('SaliDBAanestysEdustaja').distinct().pluck('EdustajaHenkiloNumero').then(ids => {
+  return bluebird.map(ids, id => {
+    return request({
+      method: 'GET',
+      url: `https://www.eduskunta.fi/FI/kansanedustajat/Sivut/${id}.aspx`
+    }).then(html => {
+      const asd = html.indexOf('src="/FI/kansanedustajat');
+      if (asd >= 0) {
+        const foo = html.slice(asd + 5);
+        const relativeUrl = foo.slice(0, foo.indexOf('"'));
+        const fullUrl = `https://www.eduskunta.fi${relativeUrl.replace(/\?.*/, '')}`;
+        const extension = fullUrl.split('.').reverse()[0];
+        if (extension !== 'png' && extension !== 'jpg') {
+          return;
+        }
+        return new Promise(resolve => {
+          const outPath = path.join(__dirname, `../data/${id}.${extension}`);
+          const out = fs.createWriteStream(outPath);
+          out.on('finish', () => {
+            console.log('downloaded:', fullUrl, '->', outPath);
+            resolve();
+          });
+          request(fullUrl).pipe(out);
+        });
+      }
+    });
+  }, { concurrency: 1 });
+}).then(() => db.destroy());

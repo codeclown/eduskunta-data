@@ -37,6 +37,44 @@
       ]
     },
     {
+      "tableName": "MemberOfParliament",
+      "primaryKey": "personId",
+      "columns": [
+        {
+          "columnName": "personId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "lastname",
+          "columnType": "string"
+        },
+        {
+          "columnName": "firstname",
+          "columnType": "string"
+        },
+        {
+          "columnName": "party",
+          "columnType": "string"
+        },
+        {
+          "columnName": "minister",
+          "columnType": "string"
+        },
+        {
+          "columnName": "XmlData",
+          "columnType": "string"
+        },
+        {
+          "columnName": "XmlDataSv",
+          "columnType": "string"
+        },
+        {
+          "columnName": "XmlDataFi",
+          "columnType": "string"
+        }
+      ]
+    },
+    {
       "tableName": "SaliDBAanestys",
       "primaryKey": "AanestysId",
       "columns": [
@@ -743,6 +781,36 @@
         {
           "columnName": "Imported",
           "columnType": "date"
+        }
+      ]
+    },
+    {
+      "tableName": "SeatingOfParliament",
+      "primaryKey": "seatNumber",
+      "columns": [
+        {
+          "columnName": "hetekaId",
+          "columnType": "string"
+        },
+        {
+          "columnName": "seatNumber",
+          "columnType": "string"
+        },
+        {
+          "columnName": "lastname",
+          "columnType": "string"
+        },
+        {
+          "columnName": "firstname",
+          "columnType": "string"
+        },
+        {
+          "columnName": "party",
+          "columnType": "string"
+        },
+        {
+          "columnName": "minister",
+          "columnType": "string"
         }
       ]
     },

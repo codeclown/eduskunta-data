@@ -7,10 +7,10 @@ const app = server();
 
 describe('GET /site-api/edustajat', () => {
   let app, db;
-  before(() => getDb('testing').then(_db => {
-    db = _db;
+  before(() => {
+    db = getDb('testing');
     app = server({ db });
-  }));
+  });
   after(() => db.destroy());
 
   it('returns query results', () => {
@@ -23,7 +23,6 @@ describe('GET /site-api/edustajat', () => {
         expect(respone.body).to.be.an('array');
         expect(respone.body).to.have.length(1);
         expect(respone.body[0]).to.deep.equal({
-          id: '1234-1234-1234-1234-1234',
           firstName: 'Teuvo',
           lastName: 'Hakkarainen'
         });
@@ -61,11 +60,14 @@ describe('GET /site-api/edustajat', () => {
             expect(respone.body).to.be.an('array');
             expect(respone.body).to.have.length(1);
             expect(respone.body[0]).to.deep.equal({
-              id: '1234-1234-1234-1234-1234',
               firstName: 'Teuvo',
               lastName: 'Hakkarainen'
             });
           })
       );
   });
+
+  it('is case insensitive');
+
+  it('supports wildcard');
 });
