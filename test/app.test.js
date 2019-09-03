@@ -1,20 +1,22 @@
 const request = require('supertest');
 const { expect } = require('chai');
 const server = require('../src/server');
+const prepareForInsert = require('../src/utils/prepareForInsert');
 const getDb = require('../src/db');
 
-const record = {"personId":"102","lastname":" Aaltonen","firstname":"Markus","party":"","minister":"f","XmlData":null,"XmlDataSv":"<redacted>","XmlDataFi":"<redacted>"};
-// TODO should unify with bin/download-data
-record.personId_Integer = 102;
+const table = require('../src/schema.json').tables.find(table => table.tableName === 'MemberOfParliament');
+const record = prepareForInsert(table, {"personId":"102","lastname":" Aaltonen","firstname":"Markus","party":"","minister":"f","XmlData":null,"XmlDataSv":"<redacted>","XmlDataFi":"<redacted>"});
 
 describe('GET /site-api/MemberOfParliament', () => {
   let app, db;
   before(() => {
     db = getDb('testing');
     app = server({ db });
-    return db('MemberOfParliament').insert(record);
+    return db('MemberOfParliament').truncate().then(() =>
+      db('MemberOfParliament').insert(record)
+    );
   });
-  after(() => db('MemberOfParliament').truncate().then(() => db.destroy()));
+  after(() => db.destroy());
 
   it('returns nothing if nothing matches', () => {
     return request(app)

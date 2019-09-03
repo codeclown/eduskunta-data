@@ -26,9 +26,9 @@ function getRowCountEstimates() {
   });
 }
 
-function indexTable({ tableName, indexName, primaryKey, columns }, estimates) {
+function indexTable(table, estimates) {
+  const { tableName, indexName, primaryKey, columns } = table;
   const rowCountEstimate = estimates.find(item => item.tableName === tableName).rowCount;
-  const dateFields = columns.filter(column => column.type === 'date');
 
   return db(tableName)
     .max(`${primaryKey}_Integer`)
@@ -47,16 +47,10 @@ function indexTable({ tableName, indexName, primaryKey, columns }, estimates) {
       .then(({ columnNames, hasMore, pkLastValue, rowData }) => {
         return db(tableName).insert(
           rowData.map(row => {
-            return row.reduce((obj, value, index) => {
-              if (columnNames[index] === primaryKey) {
-                obj[`${primaryKey}_Integer`] = parseInt(value);
-              }
-              if (dateFields.indexOf(columnNames[index]) >= 0) {
-                obj[`${columnNames[index]}_Datetime`] = new Date(value);
-              }
+            const rowObject = row.reduce((obj, value, index) => {
               obj[columnNames[index]] = value;
-              return obj;
             }, {});
+            return prepareForInsert(table, rowObject);
           })
         ).then(() => {
           if (requests % 1000) {
