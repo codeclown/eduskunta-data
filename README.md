@@ -33,10 +33,27 @@ The following script finds members in DB without an image, and scrapes their ima
 ./bin/download-member-of-parliament-images
 ```
 
+
+### (Optional) Build client-side assets
+
+If you intend to run the web UI as well, build its assets:
+
+```bash
+yarn build
+```
+
 ### Start the server
 
 ```bash
-./bin/serve
+yarn serve
+```
+
+### (Optional) Watch for changes
+
+For development purposes, rebuild on changes:
+
+```bash
+yarn watch
 ```
 
 ### Other
@@ -53,13 +70,13 @@ docker exec -it eduskunta-data-postgres psql -U foo -d foo
 Remote tables are kept in sync by caching their schema:
 
 ```bash
-./bin/store-schema-json > src/schema.json
+./bin/store-schema-json > src/server/schema.json
 ```
 
 There is an utility to compose the raw migration code for all tables:
 
 ```bash
-./bin/create-base-migration src/schema.json > src/migrations/00000000000000_create_tables.js
+./bin/create-base-migration src/server/schema.json > src/server/migrations/00000000000000_create_tables.js
 ```
 
 

@@ -1,6 +1,6 @@
 const request = require('supertest');
 const { expect } = require('chai');
-const prepareForInsert = require('../../src/utils/prepareForInsert');
+const prepareForInsert = require('../../../src/server/utils/prepareForInsert');
 
 describe('prepareForInsert', () => {
   it('adds primary key as integer column', () => {

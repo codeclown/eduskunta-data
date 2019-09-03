@@ -5,6 +5,24 @@ const { tables } = require('./schema.json');
 const server = ({ db }) => {
   const app = express();
 
+  app.use('/assets', express.static(`${__dirname}/../../dist`));
+
+  app.get('/', (req, res, next) => {
+    res.set('content-type', 'text/html').send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <title></title>
+          <link rel="stylesheet" href="/assets/client.css" />
+        </head>
+        <body>
+          <script src="/assets/client.js"></script>
+        </body>
+      </html>
+    `);
+  });
+
   app.get('/site-api/:tableName', (req, res, next) => {
     const queryableColumns = {
       MemberOfParliament: ['firstname', 'lastname']

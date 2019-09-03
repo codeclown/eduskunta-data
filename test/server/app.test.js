@@ -1,10 +1,10 @@
 const request = require('supertest');
 const { expect } = require('chai');
-const server = require('../src/server');
-const prepareForInsert = require('../src/utils/prepareForInsert');
-const getDb = require('../src/db');
+const server = require('../../src/server/server');
+const prepareForInsert = require('../../src/server/utils/prepareForInsert');
+const getDb = require('../../src/server/db');
 
-const table = require('../src/schema.json').tables.find(table => table.tableName === 'MemberOfParliament');
+const table = require('../../src/server/schema.json').tables.find(table => table.tableName === 'MemberOfParliament');
 const record = prepareForInsert(table, {"personId":"102","lastname":" Aaltonen","firstname":"Markus","party":"","minister":"f","XmlData":null,"XmlDataSv":"<redacted>","XmlDataFi":"<redacted>"});
 
 describe('GET /site-api/MemberOfParliament', () => {
