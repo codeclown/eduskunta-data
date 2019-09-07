@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 const request = require('request-promise');
-const getDb = require('../src/db');
+const getDb = require('../src/server/db');
+const insertIntoDb = require('../src/server/utils/insertIntoDb');
 
-const { tables } = require('../src/schema.json');
+const { tables } = require('../src/server/schema.json');
 
 const db = getDb();
 
@@ -30,43 +31,69 @@ function indexTable(table, estimates) {
   const { tableName, indexName, primaryKey, columns } = table;
   const rowCountEstimate = estimates.find(item => item.tableName === tableName).rowCount;
 
-  return db(tableName)
-    .max(`${primaryKey}_Integer`)
-    .then(results => results[0].max)
-    .then(maxId => {
-      const pkStartValue = maxId ? maxId + 1 : 1;
+  return db('lastBatchImportId')
+    .where('tableName', tableName)
+    .first('lastId')
+    .then(result => {
+      if (typeof result === 'undefined') {
+        return db('lastBatchImportId')
+          .insert({
+            tableName,
+            lastId: '1'
+          })
+          .then(() => {
+            return '1';
+          });
+      }
+      return result.lastId;
+    })
+    .then(lastId => {
+      console.error(`[${tableName}] rowCountEstimate: ${rowCountEstimate} lastId: ${lastId}`);
 
-      console.error(`[${tableName}] rowCountEstimate: ${rowCountEstimate} pkStartValue: ${pkStartValue}`);
-
-      return getData(pkStartValue, 0);
+      return getData(lastId, 0);
     });
 
-  function getData(pkStartValue, requests) {
-    const url = `https://avoindata.eduskunta.fi/api/v1/tables/${tableName}/batch?perPage=100&pkStartValue=${pkStartValue}&pkName=${encodeURIComponent(primaryKey)}`;
+  function getData(lastId, requests) {
+    const url = `https://avoindata.eduskunta.fi/api/v1/tables/${tableName}/batch?perPage=100&pkStartValue=${parseInt(lastId) + 1}&pkName=${encodeURIComponent(primaryKey)}`;
     return request({ url, json: true })
       .then(({ columnNames, hasMore, pkLastValue, rowData }) => {
-        return db(tableName).insert(
-          rowData.map(row => {
-            const rowObject = row.reduce((obj, value, index) => {
-              obj[columnNames[index]] = value;
-            }, {});
-            return prepareForInsert(table, rowObject);
-          })
+        if (!rowData.length) {
+          console.error(`[${tableName}] reached the end, no more results`);
+          return;
+        }
+
+        const rowObjects = rowData.map(row => row.reduce((obj, value, index) => {
+          obj[columnNames[index]] = value;
+          return obj;
+        }, {}));
+
+        // When listing reaches the end, this is null... let's manually grab the latest one
+        if (pkLastValue === null) {
+          pkLastValue = Math.max.apply(null, rowObjects.map(row => parseInt(row[primaryKey])));
+        }
+        pkLastValue = pkLastValue.toString();
+
+        return db.transaction(trx =>
+          insertIntoDb(trx, table, rowObjects)
+            .then(() => {
+              if (requests % 10 === 0) {
+                return trx(tableName).count(primaryKey, { as: 'amount' })
+                  .then(results => results[0].amount)
+                  .then(amount => {
+                    console.error(`[${tableName}] indexed results: ${amount} / ${rowCountEstimate}`);
+                  });
+              }
+            })
+            .then(() => {
+              return trx('lastBatchImportId')
+                .where('tableName', tableName)
+                .update({
+                  lastId: pkLastValue
+                });
+            })
         ).then(() => {
-          if (requests % 1000) {
-            return db(tableName).count(primaryKey, { as: 'amount' })
-              .then(results => results[0].amount)
-              .then(amount => {
-                console.error(`[${tableName}] indexed results: ${amount} / ${rowCountEstimate}`);
-              });
-          }
-        }).then(() => {
           if (hasMore) {
-            // Bug in this table specifically
-            if (tableName === 'SeatingOfParliament' && pkLastValue === null) {
-              pkLastValue = Math.max.apply(null, rowData.map(row => row[columnNames.indexOf(primaryKey)]));
-            }
-            return getData(parseInt(pkLastValue) + 1, requests + 1);
+            return getData(pkLastValue, requests + 1);
           }
         });
       });

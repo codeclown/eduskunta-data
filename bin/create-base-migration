@@ -2,19 +2,27 @@
 
 const request = require('request-promise');
 
-const { tables } = require('../src/schema.json');
+const { tables } = require('../src/server/schema.json');
 
-const createTable = table => `
-  knex.schema.createTable('${table.tableName}', table => {
+const createTable = table => [
+  `knex.schema.createTable('${table.tableName}', table => {
     ${table.columns.map(column => {
+      if (column.columnName === table.primaryKey) {
+        return `table.string('${column.columnName}').primary();`;
+      }
       if (column.columnType === 'date') {
-        return `table.datetime('${column.columnName}_Datetime');\n   table.string('${column.columnName}');`;
+        return `table.string('${column.columnName}');`;
       }
       return `table.text('${column.columnName}');`;
     }).join('\n    ')}
-    table.integer('${table.primaryKey}_Integer').primary();
+  })`,
+  ...table.columns.filter(column => column.columnType === 'date').map(column => {
+    return `knex.schema.createTable('${table.tableName}__DateTime__${column.columnName}', table => {
+    table.string('${table.primaryKey}').primary();
+    table.datetime('${column.columnName}');
+  })`;
   })
-`.trim();
+].join(',\n  ');
 
 const template = `
 exports.up = knex => Promise.all([
@@ -22,7 +30,14 @@ exports.up = knex => Promise.all([
 ]);
 
 exports.down = knex => Promise.all([
-  ${tables.map(table => `knex.schema.dropTable('${table.tableName}')`).join(',\n  ')}
+  ${tables.map(table => {
+    return [
+      `knex.schema.dropTable('${table.tableName}')`,
+      ...table.columns.filter(column => column.columnType === 'date').map(column =>
+        `knex.schema.dropTable('${table.tableName}__DateTime__${column.columnName}')`
+      )
+    ].join(',\n  ');
+  }).join(',\n  ')}
 ]);
 `.trim();
 

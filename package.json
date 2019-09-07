@@ -23,7 +23,7 @@
     "vinyl-source-stream": "^2.0.0"
   },
   "scripts": {
-    "knex": "knex --knexfile src/knexfile.js",
+    "knex": "knex --knexfile src/server/knexfile.js",
     "test": "mocha --recursive",
     "build": "gulp build",
     "watch": "gulp watch",
