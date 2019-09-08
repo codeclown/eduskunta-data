@@ -1,4 +1,11 @@
 const express = require('express');
+import fs from 'fs';
+import path from 'path';
+import React from 'react';
+import * as ReactDOM from 'react-dom/server';
+import Page from '../components/Page';
+import SearchPage from '../components/SearchPage';
+import searchFromDb from './utils/searchFromDb';
 
 const { tables } = require('./schema.json');
 
@@ -7,45 +14,39 @@ const server = ({ db }) => {
 
   app.use('/assets', express.static(`${__dirname}/../../dist`));
 
-  app.get('/', (req, res, next) => {
-    res.set('content-type', 'text/html').send(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8" />
-          <title></title>
-          <link rel="stylesheet" href="/assets/client.css" />
-        </head>
-        <body>
-          <script src="/assets/client.js"></script>
-        </body>
-      </html>
-    `);
+  app.get('/', (req, res, next) => res.redirect('/haku'));
+
+  app.get('/haku', async (req, res, next) => {
+    let { terms, searchType, pageNumber } = req.query;
+    terms = terms || '';
+    searchType = ['MemberOfParliament'].includes(searchType) ? searchType : 'MemberOfParliament';
+    pageNumber = parseInt(pageNumber);
+    const perPage = 20;
+    const results = await searchFromDb(db, terms);
+    const html = ReactDOM.renderToString(
+      <SearchPage
+       terms={terms}
+       results={results}
+       searchType={searchType}
+       pageNumber={pageNumber || 1}
+       totalPages={Math.max(1, Math.floor(results[searchType].length / perPage))}
+       perPage={perPage}
+      />
+    );
+    const page = ReactDOM.renderToStaticMarkup(<Page title="Haku" content={html} />);
+    res.set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);
   });
 
-  app.get('/site-api/:tableName', (req, res, next) => {
-    const queryableColumns = {
-      MemberOfParliament: ['firstname', 'lastname']
-    };
-    const { tableName } = req.params;
-    const table = tables.find(table => table.tableName === tableName);
-    if (!table) {
-      return res.status(404).json([]);
-    }
-    const { terms } = req.query;
-    if (typeof terms === 'undefined' || terms.length < 2) {
-      return res.status(401).json([]);
-    }
-    const query = db(tableName);
-    const columnsToQuery = queryableColumns[tableName] || [];
-    terms.trim().split(/\s+/g).forEach(term => {
-      columnsToQuery.forEach(column => {
-        query.orWhere(column, 'ilike', `%${term}%`);
-      });
+  app.get('/edustaja/:personId/portrait.jpg', (req, res, next) => {
+    const personId = parseInt(req.params.personId);
+    const filePath = path.join(__dirname, '../../data', `${personId}.jpg`);
+    const defaultImage = path.join(__dirname, '../client/default-portrait.png');
+    fs.stat(filePath, (err, file) => {
+      if (err) {
+        return res.sendFile(defaultImage);
+      }
+      res.sendFile(filePath);
     });
-    return query.then(rows => {
-      res.set('x-terms', terms).json(rows);
-    })
   });
 
   return app;

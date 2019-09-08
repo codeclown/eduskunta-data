@@ -33,7 +33,6 @@ The following script finds members in DB without an image, and scrapes their ima
 ./bin/download-member-of-parliament-images
 ```
 
-
 ### (Optional) Build client-side assets
 
 If you intend to run the web UI as well, build its assets:
