@@ -69,4 +69,22 @@ describe('extractMemberPartyInformation', () => {
       }
     ]);
   });
+
+  it('skips if AlkuPvm is empty', () => {
+    const XmlDataFi = fs.readFileSync(path.join(__dirname, '../fixtures/Eduskuntaryhmat-missing-AlkuPvm.xml'), 'utf-8');
+    expect(extractMemberPartyInformation(XmlDataFi)).to.deep.equal([
+      {
+        groupName: 'Maalaisliiton eduskuntaryhmä',
+        groupId: 'kesk01',
+        startDate: new Date('1941-06-20'),
+        endDate: new Date('1945-04-05')
+      },
+      {
+        groupName: 'Maalaisliiton eduskuntaryhmä',
+        groupId: 'kesk01',
+        startDate: new Date('1949-09-08'),
+        endDate: new Date('1958-07-21')
+      }
+    ]);
+  });
 });

@@ -6,7 +6,7 @@ const parseDate = dateString => {
 };
 
 const extractMemberPartyInformation = XmlDataFi => {
-  const $ = cheerio.load(XmlDataFi);
+  const $ = cheerio.load(XmlDataFi, { xml: true });
 
   const EdellisetEduskuntaryhmat = $('EdellisetEduskuntaryhmat > Eduskuntaryhma').map((index, Eduskuntaryhma) => {
     const groupName = $(Eduskuntaryhma).find('> Nimi').text();
@@ -15,6 +15,9 @@ const extractMemberPartyInformation = XmlDataFi => {
       return null;
     }
     return $(Eduskuntaryhma).find('Jasenyys').map((index, Jasenyys) => {
+      if (groupName === 'Suomen pienviljelijäin ja maalaiskansan puolue') {
+        console.log($(Jasenyys).find('AlkuPvm').text());
+      }
       return {
         groupName,
         groupId,
@@ -34,7 +37,11 @@ const extractMemberPartyInformation = XmlDataFi => {
   return [
     ...EdellisetEduskuntaryhmat,
     NykyinenEduskuntaryhma
-  ].filter(group => group !== null);
+  ]
+    .filter(group => group !== null)
+    // detect invalid dates (https://stackoverflow.com/a/1353711/239527)
+    .filter(group => !group.startDate || !isNaN(group.startDate.getTime()))
+    .filter(group => !group.endDate || !isNaN(group.endDate.getTime()));
 };
 
 module.exports = extractMemberPartyInformation;

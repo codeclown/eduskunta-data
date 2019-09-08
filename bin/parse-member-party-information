@@ -29,7 +29,13 @@ db('MemberOfParliament')
                   })
               )
           )))
-      ).then(() => {
+      ).catch(error => {
+        console.log('');
+        console.log('Error:', error);
+        console.log('');
+        console.log(member.XmlDataFi);
+        console.log('');
+      }).then(() => {
         process.stdout.write('.');
       });
     }, { concurrency: 100 });
