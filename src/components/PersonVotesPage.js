@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import Header from './Header';
+import { formatDate } from '../server/utils/dateFormatting';
 
 const PersonVotesPage = ({ person, votes }) => {
   return (
@@ -31,7 +32,7 @@ const PersonVotesPage = ({ person, votes }) => {
             {votes.map(vote => (
               <div key={vote.AanestysId} className="row my-1">
                 <div className="col-md-2">
-                  {vote.IstuntoPvm.toLocaleDateString('fi-FI')}
+                  {formatDate(vote.IstuntoPvm)}
                 </div>
                 <div className="col-md-8">
                   <a href={`/aanestys/${vote.AanestysId}`}>

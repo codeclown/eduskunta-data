@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import range from 'lodash.range';
 import Header from './Header';
+import { formatDate } from '../server/utils/dateFormatting';
 
 const SearchPage = ({ terms, results, searchType, pageNumber, totalPages, perPage }) => {
   const searchUrl = updated => {
@@ -48,7 +49,7 @@ const SearchPage = ({ terms, results, searchType, pageNumber, totalPages, perPag
                     <br />
                     {person.lastParliamentGroupName}
                     {/*person.lastParliamentEndDate !== null && (
-                      <span className="ml-2 text-muted">{person.lastParliamentEndDate.toLocaleDateString('fi-FI')} asti</span>
+                      <span className="ml-2 text-muted">{formatDate(person.lastParliamentEndDate)} asti</span>
                     )*/}
                   </div>
                 ))}

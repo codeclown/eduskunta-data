@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import Header from './Header';
+import { formatDate } from '../server/utils/dateFormatting';
 
 const PersonPage = ({ person, groupMemberships, recentVotes }) => {
   return (
@@ -34,7 +35,7 @@ const PersonPage = ({ person, groupMemberships, recentVotes }) => {
                   {recentVotes.map(vote => (
                     <div key={vote.AanestysId} className="row my-1">
                       <div className="col-md-2 text-right">
-                        {vote.IstuntoPvm.toLocaleDateString('fi-FI')}
+                        {formatDate(vote.IstuntoPvm)}
                       </div>
                       <div className="col-md-8">
                         <a href={`/aanestys/${vote.AanestysId}`}>
@@ -69,7 +70,7 @@ const PersonPage = ({ person, groupMemberships, recentVotes }) => {
                   <li key={index} className="list-group-item">
                     {membership.groupName}
                     <span className="float-right">
-                    {membership.startDate.toLocaleDateString('fi-FI')}–{membership.endDate !== null && membership.endDate.toLocaleDateString('fi-FI')}
+                    {formatDate(membership.startDate)}–{membership.endDate !== null && formatDate(membership.endDate)}
                     </span>
                   </li>
                 ))}
