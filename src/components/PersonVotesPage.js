@@ -31,7 +31,7 @@ const PersonVotesPage = ({ person, votes }) => {
             {votes.map(vote => (
               <div key={vote.AanestysId} className="row my-1">
                 <div className="col-md-2">
-                  {vote.IstuntoPvm.toLocaleDateString('fi-FI', { dateStyle: 'long' })}
+                  {vote.IstuntoPvm.toLocaleDateString('fi-FI')}
                 </div>
                 <div className="col-md-8">
                   <a href={`/aanestys/${vote.AanestysId}`}>

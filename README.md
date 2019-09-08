@@ -25,6 +25,13 @@ Running it for a while (~5 min) should be plenty to gather enough data for devel
 The script should be able to start from where it left off, if you run it again.
 
 
+### Run some data aggregation scripts for newly downloaded data
+
+```bash
+./bin/parse-member-party-information
+```
+
+
 ### (Optional) Download images for members of parliament
 
 The following script finds members in DB without an image, and scrapes their images (if available) from eduskunta.fi:

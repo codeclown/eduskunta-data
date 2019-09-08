@@ -42,6 +42,9 @@ const server = ({ db }) => {
   app.get('/edustaja/:personId', async (req, res, next) => {
     const personId = parseInt(req.params.personId);
     const person = await db('MemberOfParliament').where({ personId }).first();
+    const groupMemberships = await db('parliamentGroupMemberships')
+      .where('personId', personId)
+      .join('parliamentGroups', 'parliamentGroups.groupId', '=', 'parliamentGroupMemberships.groupId');
     const recentVotes = await db('SaliDBAanestysEdustaja')
       .where('SaliDBAanestysEdustaja.EdustajaHenkiloNumero', personId)
       .where('SaliDBAanestysKieli.Kieli', 'fi')
@@ -52,7 +55,7 @@ const server = ({ db }) => {
       .limit(5)
       .orderBy('SaliDBAanestys__DateTime__IstuntoPvm.IstuntoPvm', 'desc');
     const html = ReactDOM.renderToString(
-      <PersonPage person={person} recentVotes={recentVotes} />
+      <PersonPage person={person} groupMemberships={groupMemberships} recentVotes={recentVotes} />
     );
     const page = ReactDOM.renderToStaticMarkup(<Page title={`${person.firstname} ${person.lastname}`} content={html} />);
     res.set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);

@@ -1,0 +1,41 @@
+#!/usr/bin/env node
+
+const bluebird = require('bluebird');
+const getDb = require('../src/server/db');
+const extractMemberPartyInformation = require('../src/server/utils/extractMemberPartyInformation');
+
+const { tables } = require('../src/server/schema.json');
+
+const db = getDb();
+
+db('MemberOfParliament')
+  .then(members => {
+    console.log('Starting to process', members.length, 'members');
+    return bluebird.map(members, member => {
+      const memberships = extractMemberPartyInformation(member.XmlDataFi);
+      return db.transaction(trx =>
+        trx('parliamentGroupMemberships')
+          .where('personId', member.personId)
+          .delete()
+          .then(() => Promise.all(memberships.map(membership =>
+            trx.raw(`INSERT INTO "parliamentGroups" ("groupId", "groupName") VALUES (?, ?) ON CONFLICT ("groupId") DO NOTHING`, [membership.groupId, membership.groupName])
+              .then(() =>
+                trx('parliamentGroupMemberships')
+                  .insert({
+                    personId: member.personId,
+                    groupId: membership.groupId,
+                    startDate: membership.startDate,
+                    endDate: membership.endDate
+                  })
+              )
+          )))
+      ).then(() => {
+        process.stdout.write('.');
+      });
+    }, { concurrency: 100 });
+  })
+  .then(() => {
+    console.log('');
+    console.log('Done!');
+  })
+  .then(() => db.destroy());

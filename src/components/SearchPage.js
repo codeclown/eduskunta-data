@@ -46,7 +46,10 @@ const SearchPage = ({ terms, results, searchType, pageNumber, totalPages, perPag
                       {person.firstname} {person.lastname}
                     </a>
                     <br />
-                    {person.party || <span className="text-muted">Ei puoluetietoa</span>}
+                    {person.lastParliamentGroupName}
+                    {/*person.lastParliamentEndDate !== null && (
+                      <span className="ml-2 text-muted">{person.lastParliamentEndDate.toLocaleDateString('fi-FI')} asti</span>
+                    )*/}
                   </div>
                 ))}
                 <nav aria-label="Lisää sivuja">
