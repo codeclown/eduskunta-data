@@ -9,7 +9,12 @@ const { tables } = require('../src/server/schema.json');
 const db = getDb();
 
 getRowCountEstimates()
-  .then(estimates => Promise.all(tables.map(table => indexTable(table, estimates))))
+  .then(estimates => Promise.all(
+    tables
+      // whitelist for now as we don't need everything
+      .filter(table => table.tableName === 'MemberOfParliament')
+      .map(table => indexTable(table, estimates))
+  ))
   .catch(error => {
     if (error.meta) {
       console.error(error.meta.body);

@@ -4,15 +4,15 @@ const bluebird = require('bluebird');
 const fs = require('fs');
 const path = require('path');
 const request = require('request-promise');
-const getDb = require('../src/db');
+const getDb = require('../src/server/db');
 
-const { tables } = require('../src/schema.json');
+const { tables } = require('../src/server/schema.json');
 
 const db = getDb();
 
 console.log('Prepare for slowness (downloading images one by one and they are slow)');
 
-db('SaliDBAanestysEdustaja').distinct().pluck('EdustajaHenkiloNumero').then(ids => {
+db('MemberOfParliament').distinct().pluck('personId').then(ids => {
   return bluebird.map(ids, id => {
     return request({
       method: 'GET',
@@ -22,7 +22,7 @@ db('SaliDBAanestysEdustaja').distinct().pluck('EdustajaHenkiloNumero').then(ids 
       if (asd >= 0) {
         const foo = html.slice(asd + 5);
         const relativeUrl = foo.slice(0, foo.indexOf('"'));
-        const fullUrl = `https://www.eduskunta.fi${relativeUrl.replace(/\?.*/, '')}`;
+        const fullUrl = `https://www.eduskunta.fi${relativeUrl.replace(/\?.*/, '')}?Width=128`;
         const extension = fullUrl.split('.').reverse()[0];
         if (extension !== 'png' && extension !== 'jpg') {
           return;
