@@ -4,6 +4,8 @@ import path from 'path';
 import React from 'react';
 import * as ReactDOM from 'react-dom/server';
 import Page from '../components/Page';
+import PersonPage from '../components/PersonPage';
+import PersonVotesPage from '../components/PersonVotesPage';
 import SearchPage from '../components/SearchPage';
 import searchFromDb from './utils/searchFromDb';
 
@@ -34,6 +36,43 @@ const server = ({ db }) => {
       />
     );
     const page = ReactDOM.renderToStaticMarkup(<Page title="Haku" content={html} />);
+    res.set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);
+  });
+
+  app.get('/edustaja/:personId', async (req, res, next) => {
+    const personId = parseInt(req.params.personId);
+    const person = await db('MemberOfParliament').where({ personId }).first();
+    const recentVotes = await db('SaliDBAanestysEdustaja')
+      .where('SaliDBAanestysEdustaja.EdustajaHenkiloNumero', personId)
+      .where('SaliDBAanestysKieli.Kieli', 'fi')
+      .join('SaliDBAanestys', 'SaliDBAanestys.AanestysId', '=', 'SaliDBAanestysEdustaja.AanestysId')
+      .join('SaliDBAanestys__DateTime__IstuntoPvm', 'SaliDBAanestys.AanestysId', '=', 'SaliDBAanestys__DateTime__IstuntoPvm.AanestysId')
+      .join('SaliDBAanestysKieli', 'SaliDBAanestys.KieliId', '=', 'SaliDBAanestysKieli.KieliId')
+      .select('SaliDBAanestys.AanestysId', 'SaliDBAanestys.KohtaOtsikko', 'SaliDBAanestysEdustaja.EdustajaAanestys', 'SaliDBAanestys__DateTime__IstuntoPvm.IstuntoPvm')
+      .limit(5)
+      .orderBy('SaliDBAanestys__DateTime__IstuntoPvm.IstuntoPvm', 'desc');
+    const html = ReactDOM.renderToString(
+      <PersonPage person={person} recentVotes={recentVotes} />
+    );
+    const page = ReactDOM.renderToStaticMarkup(<Page title={`${person.firstname} ${person.lastname}`} content={html} />);
+    res.set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);
+  });
+
+  app.get('/edustaja/:personId/aanestykset', async (req, res, next) => {
+    const personId = parseInt(req.params.personId);
+    const person = await db('MemberOfParliament').where({ personId }).first();
+    const votes = await db('SaliDBAanestysEdustaja')
+      .where('SaliDBAanestysEdustaja.EdustajaHenkiloNumero', personId)
+      .where('SaliDBAanestysKieli.Kieli', 'fi')
+      .join('SaliDBAanestys', 'SaliDBAanestys.AanestysId', '=', 'SaliDBAanestysEdustaja.AanestysId')
+      .join('SaliDBAanestys__DateTime__IstuntoPvm', 'SaliDBAanestys.AanestysId', '=', 'SaliDBAanestys__DateTime__IstuntoPvm.AanestysId')
+      .join('SaliDBAanestysKieli', 'SaliDBAanestys.KieliId', '=', 'SaliDBAanestysKieli.KieliId')
+      .select('SaliDBAanestys.AanestysId', 'SaliDBAanestys.KohtaOtsikko', 'SaliDBAanestysEdustaja.EdustajaAanestys', 'SaliDBAanestys__DateTime__IstuntoPvm.IstuntoPvm')
+      .orderBy('SaliDBAanestys__DateTime__IstuntoPvm.IstuntoPvm', 'desc');
+    const html = ReactDOM.renderToString(
+      <PersonVotesPage person={person} votes={votes} />
+    );
+    const page = ReactDOM.renderToStaticMarkup(<Page title={`${person.firstname} ${person.lastname}`} content={html} />);
     res.set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);
   });
 

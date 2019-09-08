@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import range from 'lodash.range';
+import Header from './Header';
 
 const SearchPage = ({ terms, results, searchType, pageNumber, totalPages, perPage }) => {
   const searchUrl = updated => {
@@ -15,21 +16,7 @@ const SearchPage = ({ terms, results, searchType, pageNumber, totalPages, perPag
 
   return (
     <div>
-      <nav className="navbar navbar-light bg-light">
-        <div className="container">
-          <a className="navbar-brand" href="/">Eduskunta Data</a>
-          <form className="my-2 my-lg-0 ml-auto" style={{ width: 320 }} method="GET" action="/haku">
-            <input
-              className="form-control"
-              type="search"
-              name="terms"
-              defaultValue={terms || ''}
-              placeholder="Hae henkilöä, äänestystä, lakialoitetta…"
-              aria-label="Hae henkilöä, äänestystä, lakialoitetta…"
-            />
-          </form>
-        </div>
-      </nav>
+      <Header terms={terms} />
       <div className="container py-4">
         <p>Tulokset haulle "{terms}"</p>
         <hr className="my-4" />
@@ -59,7 +46,7 @@ const SearchPage = ({ terms, results, searchType, pageNumber, totalPages, perPag
                       {person.firstname} {person.lastname}
                     </a>
                     <br />
-                    {person.party || <span>Ei puoluetta</span>}
+                    {person.party || <span className="text-muted">Ei puoluetietoa</span>}
                   </div>
                 ))}
                 <nav aria-label="Lisää sivuja">
