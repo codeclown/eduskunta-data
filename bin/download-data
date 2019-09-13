@@ -3,6 +3,7 @@
 const request = require('request-promise');
 const getDb = require('../src/server/db');
 const insertIntoDb = require('../src/server/utils/insertIntoDb');
+const parseMemberPartyInformation = require('./parse-member-party-information');
 
 const { tables } = require('../src/server/schema.json');
 
@@ -17,20 +18,27 @@ const whitelist = ['MemberOfParliament', 'SaliDBAanestys', 'SaliDBAanestysEdusta
   const wholeTrx = useTransaction ? await db.transaction() : db;
   try {
     const estimates = await getRowCountEstimates();
+
     console.error('Beginning to index tables');
     const tablesToIndex = tables.filter(table => whitelist.includes(table.tableName));
     await Promise.all(tablesToIndex.map(table => indexTable(wholeTrx, table, estimates)));
     console.error('Indexing tables complete');
+
+    console.error('Running parse-member-party-information');
+    await parseMemberPartyInformation(wholeTrx);
+
+    console.error('Updating lastDataUpdate');
     await wholeTrx.raw(`
       INSERT INTO "lastDataUpdate" ("key", "lastDataUpdate")
       VALUES (?, ?)
       ON CONFLICT ("key")
       DO UPDATE SET "lastDataUpdate" = ?`, ['lastDataUpdate', new Date, new Date]);
-    console.error('Updating lastDataUpdate');
+
     if (useTransaction) {
       console.error('All done, committing');
       await wholeTrx.commit();
     }
+
     db.destroy();
   } catch (error) {
     if (useTransaction) {
