@@ -20,16 +20,13 @@ yarn knex migrate:latest
 ./bin/download-data
 ```
 
-Running it for a while (~5 min) should be plenty to gather enough data for development purposes.
-
-The script should be able to start from where it left off, if you run it again.
-
-
-### Run some data aggregation scripts for newly downloaded data
+Running it for a while (~5 min) should be plenty to gather enough data for development purposes. Use the `--dev` flag to restrict amount of rows to 10k per table so you don't have to wait for millions of rows to download:
 
 ```bash
-./bin/parse-member-party-information
+./bin/download-data --dev
 ```
+
+The script creates one huge transaction, and after everything is done, it updates the table `lastDataUpdate` with a timestamp. In case anything goes wrong, the transaction is not committed and the timestamp is not updated.
 
 
 ### (Optional) Download images for members of parliament

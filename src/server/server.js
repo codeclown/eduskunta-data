@@ -18,6 +18,13 @@ const server = ({ db }) => {
 
   app.get('/', (req, res, next) => res.redirect('/haku'));
 
+  app.use((req, res, next) => {
+    return db('lastDataUpdate').first().then(({ lastDataUpdate }) => {
+      res.locals.lastDataUpdate = lastDataUpdate;
+      next();
+    })
+  });
+
   app.get('/haku', async (req, res, next) => {
     let { terms, searchType, pageNumber } = req.query;
     terms = terms || '';
@@ -35,7 +42,14 @@ const server = ({ db }) => {
        perPage={perPage}
       />
     );
-    const page = ReactDOM.renderToStaticMarkup(<Page title="Haku" content={html} />);
+    const page = ReactDOM.renderToStaticMarkup(
+      <Page
+        title={terms !== '' ? `Tulokset haulle "${terms}"` : 'Haku'}
+        content={html}
+        includeFooter={true}
+        lastDataUpdate={res.locals.lastDataUpdate}
+      />
+    );
     res.set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);
   });
 
@@ -58,7 +72,14 @@ const server = ({ db }) => {
     const html = ReactDOM.renderToString(
       <PersonPage person={person} groupMemberships={groupMemberships} recentVotes={recentVotes} />
     );
-    const page = ReactDOM.renderToStaticMarkup(<Page title={`${person.firstname} ${person.lastname}`} content={html} />);
+    const page = ReactDOM.renderToStaticMarkup(
+      <Page
+        title={`${person.firstname} ${person.lastname}`}
+        content={html}
+        includeFooter={true}
+        lastDataUpdate={res.locals.lastDataUpdate}
+      />
+    );
     res.set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);
   });
 
@@ -76,7 +97,14 @@ const server = ({ db }) => {
     const html = ReactDOM.renderToString(
       <PersonVotesPage person={person} votes={votes} />
     );
-    const page = ReactDOM.renderToStaticMarkup(<Page title={`${person.firstname} ${person.lastname}`} content={html} />);
+    const page = ReactDOM.renderToStaticMarkup(
+      <Page
+        title={`${person.firstname} ${person.lastname}`}
+        content={html}
+        includeFooter={true}
+        lastDataUpdate={res.locals.lastDataUpdate}
+      />
+    );
     res.set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);
   });
 

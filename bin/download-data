@@ -6,23 +6,45 @@ const insertIntoDb = require('../src/server/utils/insertIntoDb');
 
 const { tables } = require('../src/server/schema.json');
 
-const db = getDb();
+const useTransaction = !process.argv.includes('--no-trx');
+const rowLimit = process.argv.includes('--dev') ? 10000 : Infinity;
+// whitelist for now as we don't need everything
+const whitelist = ['MemberOfParliament', 'SaliDBAanestys', 'SaliDBAanestysEdustaja', 'SaliDBAanestysKieli'];
 
-getRowCountEstimates()
-  .then(estimates => Promise.all(
-    tables
-      // whitelist for now as we don't need everything
-      .filter(table => ['MemberOfParliament', 'SaliDBAanestys', 'SaliDBAanestysEdustaja', 'SaliDBAanestysKieli'].includes(table.tableName))
-      .map(table => indexTable(table, estimates))
-  ))
-  .catch(error => {
+(async () => {
+  console.error('useTransaction:', useTransaction);
+  const db = getDb();
+  const wholeTrx = useTransaction ? await db.transaction() : db;
+  try {
+    const estimates = await getRowCountEstimates();
+    console.error('Beginning to index tables');
+    const tablesToIndex = tables.filter(table => whitelist.includes(table.tableName));
+    await Promise.all(tablesToIndex.map(table => indexTable(wholeTrx, table, estimates)));
+    console.error('Indexing tables complete');
+    await wholeTrx.raw(`
+      INSERT INTO "lastDataUpdate" ("key", "lastDataUpdate")
+      VALUES (?, ?)
+      ON CONFLICT ("key")
+      DO UPDATE SET "lastDataUpdate" = ?`, ['lastDataUpdate', new Date, new Date]);
+    console.error('Updating lastDataUpdate');
+    if (useTransaction) {
+      console.error('All done, committing');
+      await wholeTrx.commit();
+    }
+    db.destroy();
+  } catch (error) {
+    if (useTransaction) {
+      console.error('Caught an exception, rolling back transaction');
+      await wholeTrx.rollback();
+    }
     if (error.meta) {
       console.error(error.meta.body);
     } else {
       console.error(error.stack);
     }
     process.exit(1);
-  });
+  }
+})();
 
 function getRowCountEstimates() {
   return request({
@@ -32,9 +54,10 @@ function getRowCountEstimates() {
   });
 }
 
-function indexTable(table, estimates) {
+function indexTable(db, table, estimates) {
   const { tableName, indexName, primaryKey, columns } = table;
   const rowCountEstimate = estimates.find(item => item.tableName === tableName).rowCount;
+  let shouldTerminateDueToRowLimit = false;
 
   return db('lastBatchImportId')
     .where('tableName', tableName)
@@ -59,11 +82,17 @@ function indexTable(table, estimates) {
     });
 
   function getData(lastId, requests) {
-    const url = `https://avoindata.eduskunta.fi/api/v1/tables/${tableName}/batch?perPage=100&pkStartValue=${parseInt(lastId) + 1}&pkName=${encodeURIComponent(primaryKey)}`;
+    const url = `https://avoindata.eduskunta.fi/api/v1/tables/${tableName}/batch?` +
+      `perPage=100&pkStartValue=${parseInt(lastId) + 1}&pkName=${encodeURIComponent(primaryKey)}`;
     return request({ url, json: true })
       .then(({ columnNames, hasMore, pkLastValue, rowData }) => {
         if (!rowData.length) {
           console.error(`[${tableName}] reached the end, no more results`);
+          return;
+        }
+
+        if (shouldTerminateDueToRowLimit) {
+          console.error(`[${tableName}] reached row limit of ${rowLimit}, stopping here`);
           return;
         }
 
@@ -78,14 +107,17 @@ function indexTable(table, estimates) {
         }
         pkLastValue = pkLastValue.toString();
 
-        return db.transaction(trx =>
-          insertIntoDb(trx, table, rowObjects)
+        return db.transaction(trx => {
+          return insertIntoDb(trx, table, rowObjects)
             .then(() => {
               if (requests % 10 === 0) {
                 return trx(tableName).count(primaryKey, { as: 'amount' })
                   .then(results => results[0].amount)
                   .then(amount => {
                     console.error(`[${tableName}] indexed results: ${amount} / ${rowCountEstimate}`);
+                    if (amount >= rowLimit) {
+                      shouldTerminateDueToRowLimit = true;
+                    }
                   });
               }
             })
@@ -96,7 +128,7 @@ function indexTable(table, estimates) {
                   lastId: pkLastValue
                 });
             })
-        ).then(() => {
+        }).then(() => {
           return getData(pkLastValue, requests + 1);
         });
       });
