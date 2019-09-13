@@ -1,3 +1,7 @@
+$pagination-active-color:           #fff;
+$pagination-active-bg:              #343a40;
+$pagination-active-border-color:    #343a40;
+
 @import "../../node_modules/bootstrap/scss/functions";
 @import "../../node_modules/bootstrap/scss/variables";
 @import "../../node_modules/bootstrap/scss/mixins";
@@ -35,3 +39,5 @@
 // @import "../../node_modules/bootstrap/scss/spinners";
 @import "../../node_modules/bootstrap/scss/utilities";
 // @import "../../node_modules/bootstrap/scss/print";
+
+.parliament-group-color { display: inline-block; margin-right: 4px; width: 10px; height: 10px; border-radius: 10px; }

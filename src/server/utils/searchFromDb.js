@@ -22,9 +22,10 @@ const searchFromDb = (db, terms) => {
       .join('parliamentGroups', 'parliamentGroups.groupId', '=', 'parliamentGroupMemberships.groupId')
       .select(['personId', 'parliamentGroupMemberships.groupId', 'endDate', 'parliamentGroups.groupName'])
       .then(groupInformation => {
-        groupInformation.forEach(({ personId, endDate, groupName }) => {
+        groupInformation.forEach(({ personId, endDate, groupId, groupName }) => {
           const member = members.find(member => member.personId === personId);
           if (typeof member.lastParliamentEndDate === 'undefined' || (member.lastParliamentEndDate !== null && endDate > member.lastParliamentEndDate)) {
+            member.lastParliamentGroupId = groupId;
             member.lastParliamentGroupName = groupName;
             member.lastParliamentEndDate = endDate;
           }

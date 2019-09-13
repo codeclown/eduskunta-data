@@ -15,9 +15,6 @@ const extractMemberPartyInformation = XmlDataFi => {
       return null;
     }
     return $(Eduskuntaryhma).find('Jasenyys').map((index, Jasenyys) => {
-      if (groupName === 'Suomen pienviljelijäin ja maalaiskansan puolue') {
-        console.log($(Jasenyys).find('AlkuPvm').text());
-      }
       return {
         groupName,
         groupId,

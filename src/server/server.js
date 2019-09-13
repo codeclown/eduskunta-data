@@ -44,6 +44,7 @@ const server = ({ db }) => {
     const person = await db('MemberOfParliament').where({ personId }).first();
     const groupMemberships = await db('parliamentGroupMemberships')
       .where('personId', personId)
+      .orderBy('parliamentGroupMemberships.startDate', 'desc')
       .join('parliamentGroups', 'parliamentGroups.groupId', '=', 'parliamentGroupMemberships.groupId');
     const recentVotes = await db('SaliDBAanestysEdustaja')
       .where('SaliDBAanestysEdustaja.EdustajaHenkiloNumero', personId)

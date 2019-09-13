@@ -1,9 +1,12 @@
 import classNames from 'classnames';
 import React from 'react';
 import Header from './Header';
+import ParliamentGroup from './ParliamentGroup';
 import { formatDate } from '../server/utils/dateFormatting';
 
 const PersonPage = ({ person, groupMemberships, recentVotes }) => {
+  const currentGroup = groupMemberships.find(membership => membership.endDate === null);
+
   return (
     <div>
       <Header />
@@ -18,9 +21,9 @@ const PersonPage = ({ person, groupMemberships, recentVotes }) => {
               />
               <div className="card-body">
                 <h5 className="card-title">{person.firstname} {person.lastname}</h5>
-                {groupMemberships.find(membership => membership.endDate === null) && (
+                {currentGroup && (
                   <p className="card-text">
-                    {groupMemberships.find(membership => membership.endDate === null).groupName}
+                    <ParliamentGroup groupId={currentGroup.groupId} groupName={currentGroup.groupName} />
                   </p>
                 )}
                 <a target="_blank" href={`https://www.eduskunta.fi/FI/kansanedustajat/Sivut/${person.personId}.aspx`} className="card-link">eduskunta.fi</a>
@@ -68,7 +71,7 @@ const PersonPage = ({ person, groupMemberships, recentVotes }) => {
                 <div className="list-group">
                 {groupMemberships.map((membership, index) => (
                   <li key={index} className="list-group-item">
-                    {membership.groupName}
+                    <ParliamentGroup groupId={membership.groupId} groupName={membership.groupName} />
                     <span className="float-right">
                     {formatDate(membership.startDate)}–{membership.endDate !== null && formatDate(membership.endDate)}
                     </span>

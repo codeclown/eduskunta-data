@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import range from 'lodash.range';
 import Header from './Header';
+import ParliamentGroup from './ParliamentGroup';
 import { formatDate } from '../server/utils/dateFormatting';
 
 const SearchPage = ({ terms, results, searchType, pageNumber, totalPages, perPage }) => {
@@ -47,10 +48,7 @@ const SearchPage = ({ terms, results, searchType, pageNumber, totalPages, perPag
                       {person.firstname} {person.lastname}
                     </a>
                     <br />
-                    {person.lastParliamentGroupName}
-                    {/*person.lastParliamentEndDate !== null && (
-                      <span className="ml-2 text-muted">{formatDate(person.lastParliamentEndDate)} asti</span>
-                    )*/}
+                    <ParliamentGroup groupId={person.lastParliamentGroupId} groupName={person.lastParliamentGroupName} dim={person.lastParliamentEndDate !== null} />
                   </div>
                 ))}
                 <nav aria-label="Lisää sivuja">

@@ -142,6 +142,7 @@ describe('searchFromDb', () => {
           personId: '102',
           lastname: ' Aaltonen',
           firstname: 'Markus',
+          lastParliamentGroupId: 'foo01',
           lastParliamentGroupName: 'Testiryhmä',
           lastParliamentEndDate: new Date('2010-02-01')
         }
@@ -176,6 +177,7 @@ describe('searchFromDb', () => {
           personId: '102',
           lastname: ' Aaltonen',
           firstname: 'Markus',
+          lastParliamentGroupId: 'foo01',
           lastParliamentGroupName: 'Testiryhmä',
           lastParliamentEndDate: null
         }
