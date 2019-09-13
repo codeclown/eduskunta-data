@@ -2465,29 +2465,9 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.2.tgz#01146b36a6218e64e58f3a8d66de5d7fc6f6d051"
 
-knex@^0.19.4:
-  version "0.19.4"
-  resolved "https://registry.yarnpkg.com/knex/-/knex-0.19.4.tgz#cf62f8824392387152a0a188a6585d5dea6832bb"
-  dependencies:
-    bluebird "^3.5.5"
-    colorette "1.1.0"
-    commander "^3.0.1"
-    debug "4.1.1"
-    getopts "2.2.5"
-    inherits "~2.0.4"
-    interpret "^1.2.0"
-    liftoff "3.1.0"
-    lodash "^4.17.15"
-    mkdirp "^0.5.1"
-    pg-connection-string "2.1.0"
-    tarn "^2.0.0"
-    tildify "2.0.0"
-    uuid "^3.3.3"
-    v8flags "^3.1.3"
-
 "knex@https://github.com/codeclown/knex.git#trx":
   version "0.19.4"
-  resolved "https://github.com/codeclown/knex.git#c9e897c571c3f17680b65177b63bdd16f7fd4a18"
+  resolved "https://github.com/codeclown/knex.git#0df260e1b5cf1517ad2d07cd1841d9345766a0bb"
   dependencies:
     bluebird "^3.5.5"
     colorette "1.1.0"
