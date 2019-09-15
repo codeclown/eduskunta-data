@@ -1,8 +1,10 @@
-const express = require('express');
+import express from 'express';
+import 'express-async-errors';
 import fs from 'fs';
 import path from 'path';
 import React from 'react';
 import * as ReactDOM from 'react-dom/server';
+import ErrorPage from '../components/ErrorPage';
 import Page from '../components/Page';
 import PersonPage from '../components/PersonPage';
 import PersonVotesPage from '../components/PersonVotesPage';
@@ -118,6 +120,24 @@ const server = ({ db }) => {
       }
       res.sendFile(filePath);
     });
+  });
+
+  app.use((err, req, res, next) => {
+    console.error(err);
+    try {
+      const html = ReactDOM.renderToString(
+        <ErrorPage error={err} />
+      );
+      const page = ReactDOM.renderToStaticMarkup(
+        <Page
+          title="Tapahtui odottamaton virhe"
+          content={html}
+        />
+      );
+      res.status(500).set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);
+    } catch (exception) {
+      res.status(500).send('Tapahtui odottamaton virhe');
+    }
   });
 
   return app;
