@@ -33,7 +33,7 @@
   },
   "scripts": {
     "knex": "knex --knexfile src/server/knexfile.js",
-    "mocha": "babel-node ./node_modules/.bin/mocha --recursive",
+    "mocha": "TZ=UTC babel-node ./node_modules/.bin/mocha --recursive",
     "watch:scss": "node-sass --watch src/client/client.scss dist/client.css",
     "build:scss": "node-sass src/client/client.scss dist/client.css",
     "watch:server": "nodemon --exec babel-node -- bin/serve",

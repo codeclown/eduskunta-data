@@ -115,11 +115,7 @@ describe('searchFromDb', () => {
     });
   });
 
-  // Skipped due to date problems:
-  // https://github.com/brianc/node-postgres/issues/1844
-  // Test passes when ran in UTC timezone:
-  // TZ=UTC yarn mocha -g "latest past parliament"
-  it.skip('includes latest past parliament group name and end date', async () => {
+  it('includes latest past parliament group name and end date', async () => {
     const table = tables.find(table => table.tableName === 'MemberOfParliament');
     const row = {
       personId: '102',

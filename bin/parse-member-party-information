@@ -1,54 +1,9 @@
 #!/usr/bin/env node
 
-const bluebird = require('bluebird');
 const getDb = require('../src/server/db');
-const extractMemberPartyInformation = require('../src/server/utils/extractMemberPartyInformation');
+const fillParliamentGroupMembershipsTable = require('../src/server/aggregations/fillParliamentGroupMembershipsTable');
 
-const { tables } = require('../src/server/schema.json');
+const db = getDb();
 
-const parseMemberPartyInformation = trx => {
-  return trx('MemberOfParliament')
-    .then(members => {
-      console.log('Starting to process', members.length, 'members');
-      return bluebird.map(members, member => {
-        const memberships = extractMemberPartyInformation(member.XmlDataFi);
-        return trx.transaction(trx =>
-          trx('parliamentGroupMemberships')
-            .where('personId', member.personId)
-            .delete()
-            .then(() => Promise.all(memberships.map(membership =>
-              trx.raw(`INSERT INTO "parliamentGroups" ("groupId", "groupName") VALUES (?, ?) ON CONFLICT ("groupId") DO NOTHING`, [membership.groupId, membership.groupName])
-                .then(() =>
-                  trx('parliamentGroupMemberships')
-                    .insert({
-                      personId: member.personId,
-                      groupId: membership.groupId,
-                      startDate: membership.startDate,
-                      endDate: membership.endDate
-                    })
-                )
-            )))
-        ).catch(error => {
-          console.log('');
-          console.log('Error:', error);
-          console.log('');
-          console.log(member.XmlDataFi);
-          console.log('');
-        }).then(() => {
-          process.stdout.write('.');
-        });
-      }, { concurrency: 100 });
-    })
-    .then(() => {
-      console.log('');
-      console.log('Done!');
-    });
-};
-
-if (require.main === module) {
-  const db = getDb();
-  parseMemberPartyInformation(db)
-    .then(() => db.destroy());
-} else {
-  module.exports = parseMemberPartyInformation;
-}
+fillParliamentGroupMembershipsTable(db, process.stdout)
+  .then(() => db.destroy());

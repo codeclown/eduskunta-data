@@ -3,7 +3,7 @@
 const request = require('request-promise');
 const getDb = require('../src/server/db');
 const insertIntoDb = require('../src/server/utils/insertIntoDb');
-const parseMemberPartyInformation = require('./parse-member-party-information');
+const fillParliamentGroupMembershipsTable = require('../src/server/aggregations/fillParliamentGroupMembershipsTable');
 
 const { tables } = require('../src/server/schema.json');
 
@@ -25,7 +25,7 @@ const whitelist = ['MemberOfParliament', 'SaliDBAanestys', 'SaliDBAanestysEdusta
     console.error('Indexing tables complete');
 
     console.error('Running parse-member-party-information');
-    await parseMemberPartyInformation(wholeTrx);
+    await fillParliamentGroupMembershipsTable(wholeTrx, process.stdout);
 
     console.error('Updating lastDataUpdate');
     await wholeTrx.raw(`
