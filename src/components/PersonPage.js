@@ -26,7 +26,7 @@ const PersonPage = ({ person, groupMemberships, recentVotes }) => {
                     <ParliamentGroup groupId={currentGroup.groupId} groupName={currentGroup.groupName} />
                   </p>
                 )}
-                <a target="_blank" href={`https://www.eduskunta.fi/FI/kansanedustajat/Sivut/${person.personId}.aspx`} className="card-link">eduskunta.fi</a>
+                <a target="_blank" rel="noopener noreferrer" href={`https://www.eduskunta.fi/FI/kansanedustajat/Sivut/${person.personId}.aspx`} className="card-link">eduskunta.fi</a>
               </div>
             </div>
           </div>

@@ -92,7 +92,13 @@ docker run --name eduskunta-data-postgres-test -e POSTGRES_USER=foo2 -e POSTGRES
 yarn knex migrate:latest --env testing
 ```
 
-Run tests:
+Run specific tests with mocha as regular:
+
+```bash
+yarn mocha -g searchFromDb
+```
+
+Run all tests and lint:
 
 ```bash
 yarn test

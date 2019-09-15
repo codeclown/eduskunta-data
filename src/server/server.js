@@ -11,14 +11,12 @@ import PersonVotesPage from '../components/PersonVotesPage';
 import SearchPage from '../components/SearchPage';
 import searchFromDb from './utils/searchFromDb';
 
-const { tables } = require('./schema.json');
-
 const server = ({ db }) => {
   const app = express();
 
   app.use('/assets', express.static(`${__dirname}/../../dist`));
 
-  app.get('/', (req, res, next) => res.redirect('/haku'));
+  app.get('/', (req, res) => res.redirect('/haku'));
 
   app.use((req, res, next) => {
     return db('lastDataUpdate').first().then(({ lastDataUpdate }) => {
@@ -27,7 +25,7 @@ const server = ({ db }) => {
     })
   });
 
-  app.get('/haku', async (req, res, next) => {
+  app.get('/haku', async (req, res) => {
     let { terms, searchType, pageNumber } = req.query;
     terms = terms || '';
     searchType = ['MemberOfParliament'].includes(searchType) ? searchType : 'MemberOfParliament';
@@ -55,7 +53,7 @@ const server = ({ db }) => {
     res.set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);
   });
 
-  app.get('/edustaja/:personId', async (req, res, next) => {
+  app.get('/edustaja/:personId', async (req, res) => {
     const personId = parseInt(req.params.personId);
     const person = await db('MemberOfParliament').where({ personId }).first();
     const groupMemberships = await db('parliamentGroupMemberships')
@@ -85,7 +83,7 @@ const server = ({ db }) => {
     res.set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);
   });
 
-  app.get('/edustaja/:personId/aanestykset', async (req, res, next) => {
+  app.get('/edustaja/:personId/aanestykset', async (req, res) => {
     const personId = parseInt(req.params.personId);
     const person = await db('MemberOfParliament').where({ personId }).first();
     const votes = await db('SaliDBAanestysEdustaja')
@@ -110,11 +108,11 @@ const server = ({ db }) => {
     res.set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);
   });
 
-  app.get('/edustaja/:personId/portrait.jpg', (req, res, next) => {
+  app.get('/edustaja/:personId/portrait.jpg', (req, res) => {
     const personId = parseInt(req.params.personId);
     const filePath = path.join(__dirname, '../../data', `${personId}.jpg`);
     const defaultImage = path.join(__dirname, '../client/default-portrait.png');
-    fs.stat(filePath, (err, file) => {
+    fs.stat(filePath, err => {
       if (err) {
         return res.sendFile(defaultImage);
       }
@@ -122,6 +120,7 @@ const server = ({ db }) => {
     });
   });
 
+  // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
     console.error(err);
     try {

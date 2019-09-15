@@ -3,7 +3,6 @@ import React from 'react';
 import range from 'lodash.range';
 import Header from './Header';
 import ParliamentGroup from './ParliamentGroup';
-import { formatDate } from '../server/utils/dateFormatting';
 
 const SearchPage = ({ terms, results, searchType, pageNumber, totalPages, perPage }) => {
   const searchUrl = updated => {
@@ -20,7 +19,7 @@ const SearchPage = ({ terms, results, searchType, pageNumber, totalPages, perPag
     <div>
       <Header terms={terms} />
       <div className="container py-4">
-        <p>Tulokset haulle "{terms}"</p>
+        <p>Tulokset haulle &quot;{terms}&quot;</p>
         <hr className="my-4" />
         <div className="row">
           <div className="col-md-3">

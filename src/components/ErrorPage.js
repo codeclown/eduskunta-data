@@ -1,8 +1,4 @@
-import classNames from 'classnames';
 import React from 'react';
-import Header from './Header';
-import ParliamentGroup from './ParliamentGroup';
-import { formatDate } from '../server/utils/dateFormatting';
 
 const ErrorPage = ({ error }) => {
   return (
