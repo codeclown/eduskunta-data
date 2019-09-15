@@ -4,11 +4,13 @@ import { formatDate, formatTime } from '../server/utils/dateFormatting';
 const Footer = ({ lastDataUpdate }) => {
   return (
     <div className="mt-auto">
-      <div className="pb-3 pt-5 text-muted">
-        <div className="container">
-          Informaatio päivitetty viimeksi {formatDate(lastDataUpdate)} noin klo {formatTime(lastDataUpdate)}
+      {lastDataUpdate && (
+        <div className="pb-3 pt-5 text-muted">
+          <div className="container">
+            Informaatio päivitetty viimeksi {formatDate(lastDataUpdate)} noin klo {formatTime(lastDataUpdate)}
+          </div>
         </div>
-      </div>
+      )}
       <div className="py-3 text-muted bg-light">
         <div className="container">
           <p className="my-2">

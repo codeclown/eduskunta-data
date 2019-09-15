@@ -19,8 +19,8 @@ const server = ({ db }) => {
   app.get('/', (req, res) => res.redirect('/haku'));
 
   app.use((req, res, next) => {
-    return db('lastDataUpdate').first().then(({ lastDataUpdate }) => {
-      res.locals.lastDataUpdate = lastDataUpdate;
+    return db('lastDataUpdate').first().then(row => {
+      res.locals.lastDataUpdate = row ? row.lastDataUpdate : null;
       next();
     })
   });
