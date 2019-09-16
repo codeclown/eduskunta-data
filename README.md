@@ -2,10 +2,16 @@
 
 ## Download the entire dataset into Postgres
 
-### Start Postgres via docker
+### Start cluster via docker
 
 ```bash
-docker run --name eduskunta-data-postgres -e POSTGRES_USER=foo -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres
+docker-compose up --build
+```
+
+### After package.json changes, docker image needs to be rebuilt
+
+```bash
+docker-compose build --no-cache
 ```
 
 ### Run migrations
