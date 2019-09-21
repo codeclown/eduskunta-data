@@ -29,7 +29,7 @@ const server = ({ db }) => {
   app.get('/haku', async (req, res) => {
     let { terms, searchType, pageNumber } = req.query;
     terms = terms || '';
-    searchType = ['MemberOfParliament'].includes(searchType) ? searchType : 'MemberOfParliament';
+    searchType = ['MemberOfParliament', 'SaliDBAanestys'].includes(searchType) ? searchType : 'MemberOfParliament';
     pageNumber = parseInt(pageNumber);
     const perPage = 20;
     const results = await searchFromDb(db, terms);

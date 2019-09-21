@@ -5,7 +5,8 @@ const searchFromDb = (db, terms) => {
 
   if (!terms.length) {
     return {
-      MemberOfParliament: []
+      MemberOfParliament: [],
+      SaliDBAanestys: []
     };
   }
 
@@ -34,8 +35,19 @@ const searchFromDb = (db, terms) => {
       });
   });
 
+  let SaliDBAanestys = db('SaliDBAanestys');
+  terms.split(/\s+/g).forEach(term => {
+    SaliDBAanestys.orWhere('KohtaOtsikko', 'ilike', `%${term}%`);
+  });
+  SaliDBAanestys.join('SaliDBAanestys__DateTime__IstuntoPvm', 'SaliDBAanestys.AanestysId', '=', 'SaliDBAanestys__DateTime__IstuntoPvm.AanestysId');
+  SaliDBAanestys.join('SaliDBAanestys__DateTime__IstuntoIlmoitettuAlkuaika', 'SaliDBAanestys.AanestysId', '=', 'SaliDBAanestys__DateTime__IstuntoIlmoitettuAlkuaika.AanestysId');
+  SaliDBAanestys.join('SaliDBAanestys__DateTime__IstuntoAlkuaika', 'SaliDBAanestys.AanestysId', '=', 'SaliDBAanestys__DateTime__IstuntoAlkuaika.AanestysId');
+  SaliDBAanestys.join('SaliDBAanestys__DateTime__AanestysAlkuaika', 'SaliDBAanestys.AanestysId', '=', 'SaliDBAanestys__DateTime__AanestysAlkuaika.AanestysId');
+  SaliDBAanestys.join('SaliDBAanestys__DateTime__AanestysLoppuaika', 'SaliDBAanestys.AanestysId', '=', 'SaliDBAanestys__DateTime__AanestysLoppuaika.AanestysId');
+
   return bluebird.props({
-    MemberOfParliament
+    MemberOfParliament,
+    SaliDBAanestys
   });
 };
 
