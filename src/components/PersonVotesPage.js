@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import Header from './Header';
+import PersonInfo from './PersonInfo';
 import { formatDate } from '../server/utils/dateFormatting';
 
 const PersonVotesPage = ({ person, votes }) => {
@@ -9,20 +10,12 @@ const PersonVotesPage = ({ person, votes }) => {
       <Header />
       <div className="container py-4">
         <div className="mb-4" style={{ display: 'flex', alignItems: 'center' }}>
-          <a
-            className="text-body clearfix"
-            href={`/edustaja/${person.personId}`}
-            style={{ display: 'inline-flex', alignItems: 'center' }}
-          >
-            <img
-              width={30}
-              height={30}
-              src={`/edustaja/${person.personId}/portrait.jpg`}
-              alt={`${person.firstname} ${person.lastname}`}
-              className="rounded float-left mr-2"
-            />
-            {person.firstname} {person.lastname}
-          </a>
+          <PersonInfo
+            small
+            personId={person.personId}
+            firstName={person.firstname}
+            lastName={person.lastname}
+          />
           <span className="mx-3 text-black-50">/</span>
           Äänestykset
         </div>

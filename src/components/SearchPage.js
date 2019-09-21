@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import range from 'lodash.range';
 import Header from './Header';
-import ParliamentGroup from './ParliamentGroup';
+import PersonInfo from './PersonInfo';
 
 const SearchPage = ({ terms, results, searchType, pageNumber, totalPages, perPage }) => {
   const searchUrl = updated => {
@@ -32,22 +32,15 @@ const SearchPage = ({ terms, results, searchType, pageNumber, totalPages, perPag
             {results[searchType].length ? (
               <div>
                 {results[searchType].slice((pageNumber - 1) * perPage, pageNumber * perPage).map(person => (
-                  <div key={person.personId} className="my-3 clearfix">
-                    <img
-                      width={50}
-                      height={50}
-                      src={`/edustaja/${person.personId}/portrait.jpg`}
-                      alt={`${person.firstname} ${person.lastname}`}
-                      className="rounded float-left mr-2"
+                  <div key={person.personId} className="my-3">
+                    <PersonInfo
+                      personId={person.personId}
+                      firstName={person.firstname}
+                      lastName={person.lastname}
+                      parliamentGroupId={person.lastParliamentGroupId}
+                      parliamentGroupName={person.lastParliamentGroupName}
+                      parliamentGroupEndDate={person.lastParliamentEndDate}
                     />
-                    <a
-                      className="text-body font-weight-bolder"
-                      href={`/edustaja/${person.personId}`}
-                    >
-                      {person.firstname} {person.lastname}
-                    </a>
-                    <br />
-                    <ParliamentGroup groupId={person.lastParliamentGroupId} groupName={person.lastParliamentGroupName} dim={person.lastParliamentEndDate !== null} />
                   </div>
                 ))}
                 <nav aria-label="Lisää sivuja">

@@ -9,6 +9,7 @@ import Page from '../components/Page';
 import PersonPage from '../components/PersonPage';
 import PersonVotesPage from '../components/PersonVotesPage';
 import SearchPage from '../components/SearchPage';
+import VotePage from '../components/VotePage';
 import searchFromDb from './utils/searchFromDb';
 
 const server = ({ db }) => {
@@ -118,6 +119,33 @@ const server = ({ db }) => {
       }
       res.sendFile(filePath);
     });
+  });
+
+  app.get('/aanestys/:AanestysId', async (req, res) => {
+    const AanestysId = parseInt(req.params.AanestysId);
+    const vote = await db('SaliDBAanestys').where({ AanestysId }).first();
+    const votes = await db('SaliDBAanestysEdustaja').where({ AanestysId });
+    const groupedVotes = votes.reduce((grouped, item) => {
+      const answer = item.EdustajaAanestys.trim();
+      grouped[answer] = grouped[answer] || [];
+      grouped[answer].push(item);
+      return grouped;
+    }, {});
+    Object.keys(groupedVotes).forEach(answer => {
+      groupedVotes[answer].sort((a, b) => a.EdustajaEtunimi.localeCompare(b.EdustajaEtunimi));
+    });
+    const html = ReactDOM.renderToString(
+      <VotePage vote={vote} groupedVotes={groupedVotes} />
+    );
+    const page = ReactDOM.renderToStaticMarkup(
+      <Page
+        title={`Äänestys: ${vote.KohtaOtsikko}`}
+        content={html}
+        includeFooter={true}
+        lastDataUpdate={res.locals.lastDataUpdate}
+      />
+    );
+    res.set('content-type', 'text/html').send(`<!DOCTYPE html>${page}`);
   });
 
   // eslint-disable-next-line no-unused-vars
