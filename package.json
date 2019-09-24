@@ -48,8 +48,5 @@
       "@babel/preset-env",
       "@babel/preset-react"
     ]
-  },
-  "engines": {
-    "node": "10.16.3"
   }
 }
