@@ -77,9 +77,31 @@
       update_cache: yes
     become: yes
 
-  - name: "Install yarn"
+  - name: Install yarn
     apt:
       name: yarn
       state: present
       install_recommends: no
+    become: yes
+
+  - name: Install nginx
+    apt:
+      name: nginx
+    become: yes
+
+  - name: Install nginx configuration
+    template:
+      src: ../templates/nginx.j2
+      dest: /etc/nginx/sites-available/default
+    become: yes
+
+  - name: Verify nginx configuration
+    shell: nginx -t
+    become: yes
+
+  - name: Restart nginx
+    systemd:
+      name: nginx
+      state: restarted
+      enabled: yes
     become: yes

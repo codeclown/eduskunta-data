@@ -1,7 +1,13 @@
 module.exports = {
   production: {
     client: 'pg',
-    connection: process.env.DATABASE_URL
+    connection: {
+      host: '127.0.0.1',
+      user: 'eduskunta-data-production',
+      password: 'secret',
+      database: 'eduskunta-data-production',
+      port: 5432
+    }
   },
   development: {
     client: 'pg',
