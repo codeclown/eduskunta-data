@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// This script was used to generate the base migration:
+// ./bin/create-base-migration src/server/schema.json > src/server/migrations/00000000000000_create_tables.js
+
 const request = require('request-promise');
 
 const { tables } = require('../src/server/schema.json');

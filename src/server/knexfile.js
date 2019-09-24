@@ -6,19 +6,21 @@ module.exports = {
   development: {
     client: 'pg',
     connection: {
-      user: 'foo',
+      host: '127.0.0.1',
+      user: 'eduskunta-data-development',
       password: 'secret',
-      database: 'foo',
+      database: 'eduskunta-data-development',
       port: 5432
     }
   },
   testing: {
     client: 'pg',
     connection: {
-      user: 'foo2',
+      host: '127.0.0.1',
+      user: 'eduskunta-data-testing',
       password: 'secret',
-      database: 'foo2',
-      port: 5433
+      database: 'eduskunta-data-testing',
+      port: 5432
     }
   },
   migrations: {

@@ -41,8 +41,7 @@
     "build": "npm-run-all --parallel build:scss",
     "serve": "babel-node bin/serve",
     "lint": "eslint src",
-    "test": "yarn mocha && yarn lint",
-    "postinstall": "yarn build"
+    "test": "yarn mocha && yarn lint"
   },
   "babel": {
     "presets": [
@@ -51,6 +50,6 @@
     ]
   },
   "engines": {
-    "node": "8.11.3"
+    "node": "10.16.3"
   }
 }

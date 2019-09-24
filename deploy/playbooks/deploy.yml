@@ -1,0 +1,56 @@
+---
+- name: deploy
+  hosts: all
+
+  # **NOTE!** This process and document is WIP.
+
+  vars:
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
+
+  tasks:
+  - name: Ensure deployments-folder exists
+    file:
+      path: /deployments
+      state: directory
+
+  - echo: "Beginning deployment {{timestamp}}"
+
+  - name: Download master as zip archive
+    get_url:
+      url: https://github.com/codeclown/eduskunta-data/archive/master.zip
+      dest: "/deployments/{{timestamp}}.zip"
+
+  - name: Unzip downloaded file
+    unarchive:
+      src: "/deployments/{{timestamp}}.zip"
+      dest: "/deployments/{{timestamp}}"
+
+  - name: Install dependencies
+    yarn:
+      path: "/deployments/{{timestamp}}"
+
+  - name: Stop app
+    # TODO
+
+  - name: Run migrations
+    shell: yarn knex migrate:latest
+
+  - name: Build assets
+    shell: yarn build
+    chdir: "/deployments/{{timestamp}}"
+
+  - name: Symlink deployment to current
+    file:
+      src: "/deployments/{{timestamp}}"
+      dest: /deployments/current
+      state: link
+
+  - name: Configure cron workers
+    cron:
+      name: "download-data"
+      minute: "0"
+      hour: "5"
+      job: "{{ ansible_env.HOME }}/.nvm/nvm-exec /deployments/current/bin/download-data"
+
+  - name: Start app
+    # TODO

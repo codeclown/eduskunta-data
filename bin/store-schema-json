@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
-const request = require('request-promise');
+// This script is used to update the schema.json file, which can be compared to detect schema changes:
+// ./bin/store-schema-json > src/server/schema.json
 
-// The resulting schema JSON is compared before every data sync, so we can abort syncing data if remote schema has changed
+const request = require('request-promise');
 
 request({
   method: 'GET',

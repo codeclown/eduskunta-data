@@ -1,0 +1,85 @@
+---
+- name: provision
+  hosts: all
+
+  tasks:
+  - name: Install postgres and ansible postgres dependencies
+    apt:
+      name: ['postgresql', 'libpq-dev']
+    become: yes
+
+  - name: Install ansible postgres dependencies
+    pip:
+      name: ['psycopg2']
+      executable: pip3
+    become: yes
+
+  - name: Start postgres
+    systemd:
+      name: postgresql
+      state: started
+    become: yes
+
+  - name: Create databases
+    postgresql_db:
+      name: "{{item}}"
+    with_items:
+      - eduskunta-data-production
+      - eduskunta-data-development
+      - eduskunta-data-testing
+    become: yes
+    become_user: postgres
+
+  - name: Create database users and grant privileges
+    postgresql_user:
+      db: "{{item}}"
+      name: "{{item}}"
+      password: secret
+      priv: ALL
+      role_attr_flags: LOGIN,NOSUPERUSER
+    with_items:
+      - eduskunta-data-production
+      - eduskunta-data-development
+      - eduskunta-data-testing
+    become: yes
+    become_user: postgres
+
+  - name: Install nvm
+    shell: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+    args:
+      creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+  - name: Install node
+    shell: ". {{ ansible_env.HOME }}/.nvm/nvm.sh && NVM_DIR={{ ansible_env.HOME }}/.nvm nvm install 10"
+
+  # https://github.com/fubarhouse/ansible-role-yarn/blob/d439f4e95e87feceb8086ad3ddff6ec6989ba8eb/tasks/yarn-Debian.yml
+  - name: "Yarn | GPG"
+    apt_key:
+      url: https://dl.yarnpkg.com/debian/pubkey.gpg
+      state: present
+    become: yes
+  - name: "Yarn | Ensure Debian sources list file exists"
+    file:
+      path: /etc/apt/sources.list.d/yarn.list
+      owner: root
+      mode: 0644
+      state: touch
+    become: yes
+  - name: "Yarn | Ensure Debian package is in sources list"
+    lineinfile:
+      dest: /etc/apt/sources.list.d/yarn.list
+      regexp: 'deb http://dl.yarnpkg.com/debian/ stable main'
+      line: 'deb http://dl.yarnpkg.com/debian/ stable main'
+      state: present
+    become: yes
+  - name: "Yarn | Update APT cache"
+    apt:
+      update_cache: yes
+    become: yes
+
+  - name: "Install yarn"
+    apt:
+      name: yarn
+      state: present
+      install_recommends: no
+    become: yes
