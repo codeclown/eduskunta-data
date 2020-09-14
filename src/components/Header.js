@@ -4,7 +4,10 @@ const Header = ({ terms }) => {
   return (
     <nav className="navbar navbar-light bg-light">
       <div className="container">
-        <a className="navbar-brand" href="/">Eduskunta Data</a>
+        <a className="brand" href="/">
+          <span className="brand__logo" title="Eduskunta-database">EKDB</span>
+          <span className="brand__subtitle">Selaa eduskunnan avointa dataa</span>
+        </a>
         <form className="my-2 my-lg-0 ml-auto" style={{ width: 320 }} method="GET" action="/haku">
           <input
             className="form-control"

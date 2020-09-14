@@ -43,3 +43,9 @@ $pagination-active-border-color:    #343a40;
 .parliament-group-color { display: inline-block; margin-right: 4px; width: 10px; height: 10px; border-radius: 10px; }
 
 .footer-link { text-decoration: underline; }
+
+.brand { display: inline-flex; flex-direction: column; color: $navbar-light-color; padding: 5px 10px; margin-left: -10px; }
+.brand:hover { color: $navbar-light-hover-color; background-color: rgba(0, 0, 0, 0.04); text-decoration: none; }
+.brand:active { color: $navbar-light-active-color; background-color: rgba(0, 0, 0, 0.08); }
+.brand__logo { font-size: 14px; font-weight: 700; letter-spacing: 1px; }
+.brand__subtitle { font-size: 12px; }
