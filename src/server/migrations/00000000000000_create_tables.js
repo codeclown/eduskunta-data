@@ -1,3 +1,6 @@
+// This file was auto-generated
+// @see <project_root>/bin/create-base-migration
+
 exports.up = knex => Promise.all([
   knex.schema.createTable('Attachment', table => {
     table.string('Id').primary();
@@ -26,6 +29,7 @@ exports.up = knex => Promise.all([
     table.text('XmlData');
     table.text('XmlDataSv');
     table.text('XmlDataFi');
+    table.text('XmlDataEn');
   }),
   knex.schema.createTable('SaliDBAanestys', table => {
     table.string('AanestysId').primary();

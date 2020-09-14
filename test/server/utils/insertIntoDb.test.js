@@ -33,7 +33,8 @@ describe('insertIntoDb', () => {
       minister: 'f',
       XmlData: null,
       XmlDataSv: '<redacted1>',
-      XmlDataFi: '<redacted2>'
+      XmlDataFi: '<redacted2>',
+      XmlDataEn: '<redacted3>'
     };
 
     await insertIntoDb(trx, table, [row]);

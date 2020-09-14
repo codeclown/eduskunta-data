@@ -1,0 +1,18 @@
+version: '3.1'
+services:
+  ekdb-dev:
+    image: postgres
+    restart: always
+    ports:
+      - 5400:5432
+    environment:
+      POSTGRES_USER: ekdb-dev
+      POSTGRES_PASSWORD: secret
+  ekdb-tests:
+    image: postgres
+    restart: always
+    ports:
+      - 5401:5432
+    environment:
+      POSTGRES_USER: ekdb-tests
+      POSTGRES_PASSWORD: secret

@@ -1,32 +1,22 @@
 module.exports = {
-  production: {
-    client: 'pg',
-    connection: {
-      host: '127.0.0.1',
-      user: 'eduskunta-data-production',
-      password: 'secret',
-      database: 'eduskunta-data-production',
-      port: 5432
-    }
-  },
   development: {
     client: 'pg',
     connection: {
       host: '127.0.0.1',
-      user: 'eduskunta-data-development',
+      user: 'ekdb-dev',
       password: 'secret',
-      database: 'eduskunta-data-development',
-      port: 5432
+      database: 'ekdb-dev',
+      port: 5400
     }
   },
   testing: {
     client: 'pg',
     connection: {
       host: '127.0.0.1',
-      user: 'eduskunta-data-testing',
+      user: 'ekdb-tests',
       password: 'secret',
-      database: 'eduskunta-data-testing',
-      port: 5432
+      database: 'ekdb-tests',
+      port: 5401
     }
   },
   migrations: {

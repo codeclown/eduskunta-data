@@ -71,6 +71,10 @@
         {
           "columnName": "XmlDataFi",
           "columnType": "string"
+        },
+        {
+          "columnName": "XmlDataEn",
+          "columnType": "string"
         }
       ]
     },

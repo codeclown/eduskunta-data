@@ -28,6 +28,9 @@ const createTable = table => [
 ].join(',\n  ');
 
 const template = `
+// This file was auto-generated
+// @see <project_root>/bin/create-base-migration
+
 exports.up = knex => Promise.all([
   ${tables.map(table => createTable(table)).join(',\n  ')}
 ]);

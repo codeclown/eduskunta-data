@@ -1,8 +1,6 @@
-import classNames from 'classnames';
 import React from 'react';
 import Header from './Header';
 import PersonInfo from './PersonInfo';
-import { formatDate } from '../server/utils/dateFormatting';
 
 const VotePage = ({ vote, groupedVotes }) => {
   return (
@@ -19,7 +17,7 @@ const VotePage = ({ vote, groupedVotes }) => {
           {['Jaa', 'Ei', 'Tyhjää', 'Poissa'].map((answer, index) => (
             <div className="col-md-3" key={index}>
               <h6>{answer} ({vote[`AanestysTulos${answer === 'Tyhjää' ? 'Tyhjia' : answer}`].trim()})</h6>
-              {(groupedVotes[answer] || []).map(personVote => (
+              {(groupedVotes[answer] || []).map(personVote => (
                 <div key={personVote.EdustajaHenkiloNumero} className="my-1">
                   <PersonInfo
                     small
