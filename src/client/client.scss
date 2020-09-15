@@ -40,6 +40,8 @@ $pagination-active-border-color:    #343a40;
 @import "../../node_modules/bootstrap/scss/utilities";
 // @import "../../node_modules/bootstrap/scss/print";
 
+body { overflow-y: scroll; }
+
 .parliament-group-color { display: inline-block; margin-right: 4px; width: 10px; height: 10px; border-radius: 10px; }
 
 .footer-link { text-decoration: underline; }
